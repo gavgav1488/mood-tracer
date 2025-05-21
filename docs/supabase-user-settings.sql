@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS public.user_settings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   is_public BOOLEAN NOT NULL DEFAULT false,
+  is_admin BOOLEAN NOT NULL DEFAULT false,
   theme_preference TEXT CHECK (theme_preference IN ('light', 'dark', 'system')) DEFAULT 'system',
   notification_enabled BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
@@ -41,6 +42,7 @@ COMMENT ON TABLE public.user_settings IS 'Настройки пользоват�
 COMMENT ON COLUMN public.user_settings.id IS 'Уникальный идентификатор записи настроек';
 COMMENT ON COLUMN public.user_settings.user_id IS 'Идентификатор пользователя из auth.users';
 COMMENT ON COLUMN public.user_settings.is_public IS 'Флаг публичности профиля пользователя';
+COMMENT ON COLUMN public.user_settings.is_admin IS 'Флаг администратора';
 COMMENT ON COLUMN public.user_settings.theme_preference IS 'Предпочтительная тема оформления';
 COMMENT ON COLUMN public.user_settings.notification_enabled IS 'Флаг включения уведомлений';
 COMMENT ON COLUMN public.user_settings.created_at IS 'Дата и время создания записи';
