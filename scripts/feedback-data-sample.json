@@ -1,0 +1,102 @@
+[
+  {
+    "id": "1",
+    "user_id": null,
+    "usability": "excellent",
+    "design": "good",
+    "features": "good",
+    "comments": "Очень удобное приложение, нравится интерфейс и возможность быстро записывать свои эмоции.",
+    "email": "user1@example.com",
+    "created_at": "2023-11-01T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "user_id": "user-id-2",
+    "usability": "good",
+    "design": "excellent",
+    "features": "average",
+    "comments": "Дизайн отличный, но хотелось бы больше функций для анализа настроения за период времени.",
+    "email": "user2@example.com",
+    "created_at": "2023-11-02T11:30:00Z"
+  },
+  {
+    "id": "3",
+    "user_id": "user-id-3",
+    "usability": "average",
+    "design": "good",
+    "features": "good",
+    "comments": "Иногда сложно найти нужную функцию, но в целом приложение хорошее.",
+    "email": "user3@example.com",
+    "created_at": "2023-11-03T09:15:00Z"
+  },
+  {
+    "id": "4",
+    "user_id": null,
+    "usability": "bad",
+    "design": "average",
+    "features": "bad",
+    "comments": "Неудобно пользоваться на мобильном телефоне, кнопки слишком маленькие.",
+    "email": "user4@example.com",
+    "created_at": "2023-11-04T14:20:00Z"
+  },
+  {
+    "id": "5",
+    "user_id": "user-id-5",
+    "usability": "good",
+    "design": "good",
+    "features": "excellent",
+    "comments": "Очень нравится функция визуализации настроения, было бы здорово добавить возможность делиться с друзьями.",
+    "email": "user5@example.com",
+    "created_at": "2023-11-05T16:45:00Z"
+  },
+  {
+    "id": "6",
+    "user_id": "user-id-6",
+    "usability": "excellent",
+    "design": "excellent",
+    "features": "good",
+    "comments": "Приятный дизайн и удобный интерфейс. Предлагаю добавить темную тему.",
+    "email": "user6@example.com",
+    "created_at": "2023-11-06T08:30:00Z"
+  },
+  {
+    "id": "7",
+    "user_id": null,
+    "usability": "average",
+    "design": "bad",
+    "features": "average",
+    "comments": "Цветовая схема не очень приятная для глаз, хотелось бы более спокойные тона.",
+    "email": "user7@example.com",
+    "created_at": "2023-11-07T12:10:00Z"
+  },
+  {
+    "id": "8",
+    "user_id": "user-id-8",
+    "usability": "good",
+    "design": "good",
+    "features": "good",
+    "comments": "Все работает хорошо, но было бы удобно иметь возможность экспорта данных в PDF.",
+    "email": "user8@example.com",
+    "created_at": "2023-11-08T17:25:00Z"
+  },
+  {
+    "id": "9",
+    "user_id": "user-id-9",
+    "usability": "excellent",
+    "design": "average",
+    "features": "excellent",
+    "comments": "Функционал отличный, но дизайн кнопок можно улучшить.",
+    "email": "user9@example.com",
+    "created_at": "2023-11-09T10:50:00Z"
+  },
+  {
+    "id": "10",
+    "user_id": null,
+    "usability": "good",
+    "design": "good",
+    "features": "average",
+    "comments": "Хорошее приложение, но не хватает напоминаний о необходимости сделать запись.",
+    "email": "user10@example.com",
+    "created_at": "2023-11-10T13:40:00Z"
+  }
+]
