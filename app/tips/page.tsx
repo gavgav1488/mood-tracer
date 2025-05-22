@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Heart, Brain, Smile, Frown, Zap, BookOpen, Sparkles } from 'lucide-react';
+import { ArrowLeft, Heart, Brain, Smile, Frown, Zap, BookOpen, Sparkles, UserRound, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
+import { PsychologistTips } from '@/components/tips/psychologist-tips';
 
 // Типы эмоций и советы по управлению ими
 const emotionTips = [
@@ -144,7 +145,8 @@ const emotionTips = [
 ];
 
 export default function TipsPage() {
-  const [activeTab, setActiveTab] = useState('joy');
+  const [mainTab, setMainTab] = useState('emotions');
+  const [emotionTab, setEmotionTab] = useState('joy');
   const router = useRouter();
   const { user, loading } = useAuth();
 
@@ -161,97 +163,135 @@ export default function TipsPage() {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Назад
         </Button>
-        <h1 className="text-3xl font-bold">Управление эмоциями</h1>
+        <h1 className="text-3xl font-bold">Советы и рекомендации</h1>
       </div>
 
       <div className="space-y-6">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-xl flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Советы и практики
-            </CardTitle>
-            <CardDescription>
-              Изучите практические советы и упражнения для управления различными эмоциями
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid grid-cols-5 w-full">
-                {emotionTips.map((emotion) => (
-                  <TabsTrigger key={emotion.id} value={emotion.id} className="flex items-center gap-2">
-                    <span className="hidden sm:inline">{emotion.icon}</span>
-                    <span className="sm:hidden text-lg">{emotion.emoji}</span>
-                    <span className="hidden sm:inline">{emotion.name}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+        <Tabs value={mainTab} onValueChange={setMainTab} className="space-y-6">
+          <TabsList className="grid grid-cols-2 w-full">
+            <TabsTrigger value="emotions" className="flex items-center gap-2">
+              <Heart className="h-4 w-4" />
+              <span>Управление эмоциями</span>
+            </TabsTrigger>
+            <TabsTrigger value="psychologists" className="flex items-center gap-2">
+              <UserRound className="h-4 w-4" />
+              <span>Советы психологов</span>
+            </TabsTrigger>
+          </TabsList>
 
-              {emotionTips.map((emotion) => (
-                <TabsContent key={emotion.id} value={emotion.id} className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10">
-                      <span className="text-2xl">{emotion.emoji}</span>
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-semibold">{emotion.name}</h2>
-                      <p className="text-sm text-muted-foreground">{emotion.description}</p>
-                    </div>
-                  </div>
+          <TabsContent value="emotions" className="space-y-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Советы и практики по управлению эмоциями
+                </CardTitle>
+                <CardDescription>
+                  Изучите практические советы и упражнения для управления различными эмоциями
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs value={emotionTab} onValueChange={setEmotionTab} className="space-y-6">
+                  <TabsList className="grid grid-cols-5 w-full">
+                    {emotionTips.map((emotion) => (
+                      <TabsTrigger key={emotion.id} value={emotion.id} className="flex items-center gap-2">
+                        <span className="hidden sm:inline">{emotion.icon}</span>
+                        <span className="sm:hidden text-lg">{emotion.emoji}</span>
+                        <span className="hidden sm:inline">{emotion.name}</span>
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg flex items-center gap-2">
-                          <BookOpen className="h-4 w-4 text-primary" />
-                          Советы
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2">
-                          {emotion.tips.map((tip, index) => (
-                            <li key={index} className="flex items-start gap-2">
-                              <span className="text-primary mt-1">•</span>
-                              <span>{tip}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
+                  {emotionTips.map((emotion) => (
+                    <TabsContent key={emotion.id} value={emotion.id} className="space-y-6">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10">
+                          <span className="text-2xl">{emotion.emoji}</span>
+                        </div>
+                        <div>
+                          <h2 className="text-xl font-semibold">{emotion.name}</h2>
+                          <p className="text-sm text-muted-foreground">{emotion.description}</p>
+                        </div>
+                      </div>
 
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg flex items-center gap-2">
-                          <Sparkles className="h-4 w-4 text-primary" />
-                          Практики
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {emotion.practices.map((practice, index) => (
-                          <div key={index} className="space-y-2 pb-3 border-b last:border-0">
-                            <div className="flex justify-between items-center">
-                              <h3 className="font-medium">{practice.title}</h3>
-                              <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                                {practice.duration}
-                              </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground">{practice.description}</p>
-                          </div>
-                        ))}
-                      </CardContent>
-                    </Card>
-                  </div>
-                </TabsContent>
-              ))}
-            </Tabs>
-          </CardContent>
-          <CardFooter className="border-t pt-4 text-sm text-muted-foreground">
-            <p>
-              Эти советы и практики предназначены для общего информирования и не заменяют профессиональную помощь. 
-              Если вы испытываете сильные или продолжительные негативные эмоции, рекомендуем обратиться к специалисту.
-            </p>
-          </CardFooter>
-        </Card>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card>
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-lg flex items-center gap-2">
+                              <BookOpen className="h-4 w-4 text-primary" />
+                              Советы
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <ul className="space-y-2">
+                              {emotion.tips.map((tip, index) => (
+                                <li key={index} className="flex items-start gap-2">
+                                  <span className="text-primary mt-1">•</span>
+                                  <span>{tip}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-lg flex items-center gap-2">
+                              <Sparkles className="h-4 w-4 text-primary" />
+                              Практики
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            {emotion.practices.map((practice, index) => (
+                              <div key={index} className="space-y-2 pb-3 border-b last:border-0">
+                                <div className="flex justify-between items-center">
+                                  <h3 className="font-medium">{practice.title}</h3>
+                                  <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                                    {practice.duration}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-muted-foreground">{practice.description}</p>
+                              </div>
+                            ))}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </TabsContent>
+                  ))}
+                </Tabs>
+              </CardContent>
+              <CardFooter className="border-t pt-4 text-sm text-muted-foreground">
+                <p>
+                  Эти советы и практики предназначены для общего информирования и не заменяют профессиональную помощь.
+                  Если вы испытываете сильные или продолжительные негативные эмоции, рекомендуем обратиться к специалисту.
+                </p>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="psychologists" className="space-y-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Советы профессиональных психологов
+                </CardTitle>
+                <CardDescription>
+                  Полезные рекомендации от экспертов в области психологии и психического здоровья
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PsychologistTips />
+              </CardContent>
+              <CardFooter className="border-t pt-4 text-sm text-muted-foreground">
+                <p>
+                  Эти материалы собраны из различных профессиональных источников и предназначены для общего информирования.
+                  Для получения персонализированной помощи рекомендуем обратиться к квалифицированному специалисту.
+                </p>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

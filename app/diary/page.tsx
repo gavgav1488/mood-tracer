@@ -8,10 +8,11 @@ import { MoodEntriesList } from '@/components/mood/mood-entries-list';
 import { MoodStats } from '@/components/stats/mood-stats';
 import { MonthlyMoodStats } from '@/components/stats/monthly-mood-stats';
 import { MoodCalendar } from '@/components/calendar/mood-calendar';
+import { MiniMoodCalendar } from '@/components/calendar/mini-mood-calendar';
 import { ExportData } from '@/components/export/export-data';
 import { useRef, useCallback, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, Calendar, BarChart3, BookOpen, Sparkles, TrendingUp } from 'lucide-react';
+import { Settings, Calendar, BarChart3, BookOpen, Sparkles, TrendingUp, Smile } from 'lucide-react';
 import { AnimatedCard, AnimatedCardContent } from '@/components/ui/animated-card';
 import Link from 'next/link';
 
@@ -49,6 +50,12 @@ export default function DiaryPage() {
         <div className="flex gap-2">
           <ExportData />
           <AnimatedButton variant="outline" className="rounded-full" asChild animationType="scale">
+            <Link href="/emmo">
+              <Smile className="mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">EMMO</span>
+            </Link>
+          </AnimatedButton>
+          <AnimatedButton variant="outline" className="rounded-full" asChild animationType="scale">
             <Link href="/analytics">
               <TrendingUp className="mr-2 h-4 w-4" />
               <span className="hidden sm:inline">Аналитика</span>
@@ -83,21 +90,31 @@ export default function DiaryPage() {
         </TabsList>
 
         <TabsContent value="diary" className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <AnimatedCard variant="gradient" gradientFrom="from-primary/20" gradientTo="to-purple-600/20" className="overflow-hidden">
-              <AnimatedCardContent className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Новая запись</h2>
-                <MoodEntryForm onEntryCreated={handleEntryCreated} />
-              </AnimatedCardContent>
-            </AnimatedCard>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="md:col-span-2">
+              <AnimatedCard variant="gradient" gradientFrom="from-primary/20" gradientTo="to-purple-600/20" className="overflow-hidden">
+                <AnimatedCardContent className="p-6">
+                  <h2 className="text-xl font-semibold mb-4">Новая запись</h2>
+                  <MoodEntryForm onEntryCreated={handleEntryCreated} />
+                </AnimatedCardContent>
+              </AnimatedCard>
+            </div>
 
-            <AnimatedCard variant="gradient" gradientFrom="from-purple-600/20" gradientTo="to-primary/20" className="overflow-hidden">
-              <AnimatedCardContent className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Последние записи</h2>
-                <MoodEntriesList ref={entriesListRef} />
-              </AnimatedCardContent>
-            </AnimatedCard>
+            <div className="space-y-8">
+              <AnimatedCard variant="gradient" gradientFrom="from-purple-600/20" gradientTo="to-primary/20" className="overflow-hidden">
+                <AnimatedCardContent className="p-6">
+                  <MiniMoodCalendar />
+                </AnimatedCardContent>
+              </AnimatedCard>
+            </div>
           </div>
+
+          <AnimatedCard variant="gradient" gradientFrom="from-purple-600/20" gradientTo="to-primary/20" className="overflow-hidden">
+            <AnimatedCardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Последние записи</h2>
+              <MoodEntriesList ref={entriesListRef} />
+            </AnimatedCardContent>
+          </AnimatedCard>
         </TabsContent>
 
         <TabsContent value="stats" className="space-y-8">

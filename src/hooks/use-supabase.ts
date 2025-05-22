@@ -387,33 +387,63 @@ export function useSupabase() {
 
   // Методы для работы с тегами
   const getTags = useCallback(async (options?: { forceRefresh?: boolean }) => {
-    if (!user) return [];
-
-    // Если кэш актуален и не требуется принудительное обновление, возвращаем данные из кэша
-    if (!options?.forceRefresh && isCacheValid(tagsCache.current)) {
-      return tagsCache.current.data;
-    }
-
-    const supabase = getClient();
-    const { data, error } = await supabase
-      .from('tags')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('name', { ascending: true });
-
-    if (error) {
-      console.error('Ошибка при получении тегов:', error);
+    // Проверяем, что пользователь авторизован
+    if (!user) {
+      console.log('getTags: пользователь не авторизован');
       return [];
     }
 
-    // Обновляем кэш
-    tagsCache.current = {
-      data: data as Tag[],
-      timestamp: Date.now(),
-      expiresIn: 5 * 60 * 1000, // 5 минут
-    };
+    // Если кэш актуален и не требуется принудительное обновление, возвращаем данные из кэша
+    if (!options?.forceRefresh && isCacheValid(tagsCache.current)) {
+      console.log('getTags: возвращаем данные из кэша');
+      return tagsCache.current.data;
+    }
 
-    return data as Tag[];
+    console.log('getTags: запрашиваем данные из базы данных');
+
+    try {
+      const supabase = getClient();
+      console.log('getTags: клиент Supabase получен', !!supabase);
+
+      // Проверяем, существует ли таблица tags
+      const { data: tableExists, error: tableError } = await supabase
+        .from('tags')
+        .select('id')
+        .limit(1);
+
+      if (tableError) {
+        console.error('Ошибка при проверке таблицы tags:', tableError);
+        return [];
+      }
+
+      console.log('getTags: таблица tags существует, продолжаем запрос');
+
+      // Получаем теги пользователя
+      const { data, error } = await supabase
+        .from('tags')
+        .select('id, name, created_at')
+        .eq('user_id', user.id)
+        .order('name', { ascending: true });
+
+      if (error) {
+        console.error('Ошибка при получении тегов:', error);
+        return [];
+      }
+
+      console.log('getTags: получены данные из базы данных', data);
+
+      // Обновляем кэш
+      tagsCache.current = {
+        data: data as Tag[],
+        timestamp: Date.now(),
+        expiresIn: 5 * 60 * 1000, // 5 минут
+      };
+
+      return data as Tag[];
+    } catch (error) {
+      console.error('Ошибка при получении тегов:', error);
+      return [];
+    }
   }, [getClient, user]);
 
   const createTag = useCallback(async (name: string) => {
@@ -428,6 +458,29 @@ export function useSupabase() {
 
     if (error) {
       console.error('Ошибка при создании тега:', error);
+      return null;
+    }
+
+    // Инвалидируем кэш тегов
+    tagsCache.current = null;
+
+    return data as Tag;
+  }, [getClient, user]);
+
+  const updateTag = useCallback(async (id: string, name: string) => {
+    if (!user) return null;
+
+    const supabase = getClient();
+    const { data, error } = await supabase
+      .from('tags')
+      .update({ name })
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Ошибка при обновлении тега:', error);
       return null;
     }
 
@@ -586,6 +639,7 @@ export function useSupabase() {
     saveAchievement,
     getTags,
     createTag,
+    updateTag,
     deleteTag,
     getEntryTags,
     updateEntryTags,

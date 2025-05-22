@@ -5,7 +5,7 @@ import { useSupabase } from '@/hooks/use-supabase';
 
 interface Reminder {
   id: string;
-  userId: string;
+  user_id: string;
   time: string;
   days: string[];
   enabled: boolean;
@@ -27,7 +27,7 @@ const shouldShowNow = (time: string): boolean => {
   const now = new Date();
   const currentHours = now.getHours();
   const currentMinutes = now.getMinutes();
-  
+
   // Проверяем, совпадает ли текущее время с временем напоминания
   return currentHours === hours && currentMinutes === minutes;
 };
@@ -38,7 +38,7 @@ const showNotification = (message: string) => {
     console.log('Браузер не поддерживает уведомления');
     return;
   }
-  
+
   if (Notification.permission === 'granted') {
     new Notification('Дневник настроения', {
       body: message,
@@ -58,56 +58,126 @@ const showNotification = (message: string) => {
 
 // Хук для инициализации сервиса напоминаний
 export function useReminderService() {
-  const { supabase, user } = useSupabase();
-  
+  console.log('useReminderService: Инициализация хука');
+  const { supabase, user, loading } = useSupabase();
+  console.log('useReminderService: Получены данные из useSupabase', {
+    supabaseInitialized: !!supabase,
+    userInitialized: !!user,
+    loading
+  });
+
   useEffect(() => {
-    if (!user) return;
-    
+    // Проверяем, что пользователь загружен и авторизован
+    if (loading) {
+      console.log('Загрузка данных пользователя...');
+      return;
+    }
+
+    if (!user) {
+      console.log('Пользователь не авторизован, напоминания не будут загружены');
+      return;
+    }
+
+    // Проверяем, что клиент Supabase инициализирован
+    if (!supabase) {
+      console.error('Клиент Supabase не инициализирован');
+      return;
+    }
+
+    console.log('Инициализация сервиса напоминаний для пользователя:', user.id);
+    console.log('Клиент Supabase инициализирован:', !!supabase);
+
     let checkInterval: NodeJS.Timeout;
     let reminders: Reminder[] = [];
-    
+
     // Функция для загрузки напоминаний
     const fetchReminders = async () => {
       try {
-        const { data, error } = await supabase
-          .from('reminders')
-          .select('*')
-          .eq('userId', user.id)
-          .eq('enabled', true);
-          
-        if (error) throw error;
-        
-        if (data) {
-          reminders = data;
+        console.log('Загрузка напоминаний для пользователя:', user.id);
+
+        // Проверяем, существует ли таблица reminders
+        try {
+          const { data: tableData, error: tableError } = await supabase
+            .from('reminders')
+            .select('count(*)')
+            .limit(1);
+
+          if (tableError) {
+            console.log('Примечание: Таблица reminders может не существовать или недоступна:', tableError.message);
+          } else {
+            console.log('Таблица reminders существует, результат проверки:', tableData);
+          }
+        } catch (checkError) {
+          console.log('Ошибка при проверке таблицы reminders (некритично):', checkError);
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('reminders')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('enabled', true);
+
+          if (error) {
+            console.log('Примечание: Не удалось загрузить напоминания:', error.message);
+          } else {
+            console.log('Загруженные напоминания:', data);
+
+            if (data) {
+              reminders = data;
+            }
+          }
+        } catch (loadError) {
+          console.log('Ошибка при загрузке напоминаний (некритично):', loadError);
         }
       } catch (error) {
         console.error('Ошибка при загрузке напоминаний:', error);
+        // Выводим дополнительную информацию об ошибке
+        if (error instanceof Error) {
+          console.error('Сообщение ошибки:', error.message);
+          console.error('Стек вызовов:', error.stack);
+        } else {
+          console.error('Неизвестная ошибка:', error);
+        }
       }
     };
-    
+
     // Функция для проверки напоминаний
     const checkReminders = () => {
       const now = new Date();
-      
+
       reminders.forEach(reminder => {
         if (shouldShowToday(reminder.days) && shouldShowNow(reminder.time)) {
           showNotification(reminder.message);
         }
       });
     };
-    
+
     // Инициализация сервиса
     const initReminderService = async () => {
+      console.log('Инициализация сервиса напоминаний...');
+
+      // Загружаем напоминания (функция fetchReminders уже обрабатывает ошибки внутри)
       await fetchReminders();
-      
+
       // Проверяем напоминания каждую минуту
-      checkInterval = setInterval(() => {
-        checkReminders();
-      }, 60000); // 60000 мс = 1 минута
+      try {
+        checkInterval = setInterval(() => {
+          try {
+            checkReminders();
+          } catch (checkError) {
+            console.log('Ошибка при проверке напоминаний (некритично):', checkError);
+          }
+        }, 60000); // 60000 мс = 1 минута
+
+        console.log('Сервис напоминаний успешно инициализирован');
+      } catch (intervalError) {
+        console.log('Ошибка при настройке интервала проверки напоминаний:', intervalError);
+      }
     };
-    
+
     initReminderService();
-    
+
     // Очистка при размонтировании
     return () => {
       if (checkInterval) {
@@ -115,6 +185,6 @@ export function useReminderService() {
       }
     };
   }, [supabase, user]);
-  
+
   return null;
 }

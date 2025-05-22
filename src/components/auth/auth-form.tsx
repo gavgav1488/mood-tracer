@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { createBrowserClient } from '@supabase/ssr';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, Loader2, Mail, Lock, ArrowRight } from 'lucide-react';
+import { AlertCircle, Loader2, Mail, Lock, ArrowRight, Home, ArrowLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { IconInput } from '@/components/ui/icon-input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useSupabase } from '@/hooks/use-supabase';
 
 export function AuthForm() {
   const [isLoading, setIsLoading] = useState<string | null>(null);
@@ -16,25 +18,31 @@ export function AuthForm() {
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { supabase, user } = useSupabase();
+  const router = useRouter();
 
-  const getSupabaseClient = () => {
-    return createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-  };
+  // Перенаправление при успешной авторизации
+  useEffect(() => {
+    if (user) {
+      console.log('Пользователь авторизован, перенаправление на /diary');
+      router.push('/diary');
+    }
+  }, [user, router]);
 
   const handleOAuthSignIn = async (provider: 'google' | 'vk' | 'telegram') => {
     try {
       setError(null);
       setSuccessMessage(null);
       setIsLoading(provider);
-      const supabase = getSupabaseClient();
+
+      console.log(`Начало процесса входа через ${provider}`);
+      console.log('Проверка supabase клиента:', !!supabase);
 
       // Преобразуем строковый тип провайдера в тип Provider из Supabase
       const supabaseProvider = provider as 'google';
 
-      const { error } = await supabase.auth.signInWithOAuth({
+      console.log(`Вызов signInWithOAuth для провайдера ${provider}`);
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: supabaseProvider,
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
@@ -46,9 +54,13 @@ export function AuthForm() {
         },
       });
 
+      console.log(`Результат входа через ${provider}:`, { data, error });
+
       if (error) {
         throw error;
       }
+
+      console.log(`Успешное начало процесса входа через ${provider}, ожидается редирект`);
     } catch (error: any) {
       console.error(`Ошибка при входе через ${provider}:`, error);
 
@@ -63,10 +75,11 @@ export function AuthForm() {
           setError(`Провайдер ${provider} не настроен. Пожалуйста, используйте другой способ входа.`);
         }
       } else {
-        setError(`Не удалось выполнить вход через ${provider}. Пожалуйста, попробуйте позже.`);
+        setError(`Не удалось выполнить вход через ${provider}. Пожалуйста, попробуйте позже. Ошибка: ${error.message || 'Неизвестная ошибка'}`);
       }
     } finally {
       setIsLoading(null);
+      console.log(`Завершение процесса входа через ${provider}`);
     }
   };
 
@@ -92,6 +105,8 @@ export function AuthForm() {
     setError(null);
     setSuccessMessage(null);
 
+    console.log('Начало процесса входа через email');
+
     // Валидация полей
     if (!email) {
       setError('Пожалуйста, введите email');
@@ -115,9 +130,10 @@ export function AuthForm() {
 
     try {
       setIsLoading('email');
-      const supabase = getSupabaseClient();
+      console.log('Проверка supabase клиента:', !!supabase);
 
       if (isSignUp) {
+        console.log('Начало процесса регистрации');
         // Регистрация нового пользователя
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -126,6 +142,8 @@ export function AuthForm() {
             emailRedirectTo: `${window.location.origin}/auth/callback`,
           }
         });
+
+        console.log('Результат регистрации:', { data, error });
 
         if (error) throw error;
 
@@ -136,33 +154,39 @@ export function AuthForm() {
           setSuccessMessage('Письмо с подтверждением отправлено на ваш email. Пожалуйста, проверьте почту и следуйте инструкциям.');
         }
       } else {
+        console.log('Начало процесса входа');
         // Вход существующего пользователя
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password
         });
 
+        console.log('Результат входа:', { data, error });
+
         if (error) throw error;
+
+        console.log('Успешный вход, сессия:', data.session);
       }
     } catch (error: any) {
       console.error('Ошибка при входе через email:', error);
 
       // Обработка различных типов ошибок
-      if (error.message.includes('Email not confirmed')) {
+      if (error.message && error.message.includes('Email not confirmed')) {
         setError('Email не подтвержден. Пожалуйста, проверьте вашу почту и следуйте инструкциям в письме.');
-      } else if (error.message.includes('Invalid login credentials')) {
+      } else if (error.message && error.message.includes('Invalid login credentials')) {
         setError('Неверный email или пароль.');
-      } else if (error.message.includes('User already registered')) {
+      } else if (error.message && error.message.includes('User already registered')) {
         setError('Пользователь с таким email уже зарегистрирован. Попробуйте войти.');
-      } else if (error.message.includes('rate limit')) {
+      } else if (error.message && error.message.includes('rate limit')) {
         setError('Слишком много попыток входа. Пожалуйста, попробуйте позже.');
-      } else if (error.message.includes('network')) {
+      } else if (error.message && error.message.includes('network')) {
         setError('Проблема с подключением к сети. Пожалуйста, проверьте ваше интернет-соединение.');
       } else {
-        setError(`Ошибка: ${error.message}`);
+        setError(`Ошибка: ${error.message || 'Неизвестная ошибка'}`);
       }
     } finally {
       setIsLoading(null);
+      console.log('Завершение процесса входа/регистрации');
     }
   };
 
@@ -177,7 +201,6 @@ export function AuthForm() {
       setError(null);
       setSuccessMessage(null);
       setIsLoading('reset');
-      const supabase = getSupabaseClient();
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/callback?reset=true`,
@@ -196,6 +219,14 @@ export function AuthForm() {
 
   return (
     <div>
+      {/* Кнопка возврата на главную */}
+      <div className="mb-6">
+        <Link href="/" className="inline-flex items-center text-sm text-primary hover:underline">
+          <ArrowLeft className="mr-1 h-4 w-4" />
+          Вернуться на главную
+        </Link>
+      </div>
+
       {error && (
         <Alert variant="destructive" className="mb-6 border border-destructive/20">
           <AlertCircle className="h-4 w-4" />
@@ -226,11 +257,10 @@ export function AuthForm() {
         <TabsContent value="email" className="space-y-5">
           <div className="space-y-5">
             <div className="space-y-3">
-              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
               <IconInput
                 id="email"
                 type="email"
-                placeholder="Введите email"
+                placeholder="Email"
                 icon={<Mail className="h-5 w-5 text-primary/70" />}
                 className="border-border/50 bg-white/5"
                 value={email}
@@ -241,7 +271,6 @@ export function AuthForm() {
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-sm font-medium">Пароль</Label>
                 {!isSignUp && (
                   <button
                     type="button"
@@ -256,7 +285,7 @@ export function AuthForm() {
               <IconInput
                 id="password"
                 type="password"
-                placeholder={isSignUp ? "Создайте пароль" : "Введите пароль"}
+                placeholder={isSignUp ? "Создайте пароль" : "Пароль"}
                 icon={<Lock className="h-5 w-5 text-primary/70" />}
                 className="border-border/50 bg-white/5"
                 value={password}

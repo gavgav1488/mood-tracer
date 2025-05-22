@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { EmojiPicker } from './emoji-picker';
 import { NoteEditor } from './note-editor';
-import { EnhancedMoodVisualization } from './enhanced-mood-visualization';
+import { EnhancedMoodVisualizationClient } from './enhanced-mood-visualization-client';
 import { useSupabase } from '@/hooks/use-supabase';
 import { useAuth } from '@/context/auth-context';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -141,7 +141,7 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
                 </Link>
               </Button>
             </div>
-            <EnhancedMoodVisualization emoji={emoji} />
+            <EnhancedMoodVisualizationClient emoji={emoji} />
           </div>
         </div>
       </div>

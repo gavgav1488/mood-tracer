@@ -13,14 +13,18 @@ import { useSupabase } from '@/hooks/use-supabase';
 
 interface Reminder {
   id?: string;
-  userId: string;
+  user_id: string;
   time: string;
   days: string[];
   enabled: boolean;
   message: string;
 }
 
-export function ReminderSettings() {
+interface ReminderSettingsProps {
+  onSave?: () => void;
+}
+
+export function ReminderSettings({ onSave }: ReminderSettingsProps = {}) {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -34,20 +38,47 @@ export function ReminderSettings() {
 
       setIsLoading(true);
       try {
-        const { data, error } = await supabase
-          .from('reminders')
-          .select('*')
-          .eq('userId', user.id);
+        try {
+          const { data, error } = await supabase
+            .from('reminders')
+            .select('*')
+            .eq('user_id', user.id);
 
-        if (error) throw error;
+          if (error) {
+            console.error('Ошибка при запросе напоминаний:', error);
+            // Устанавливаем напоминание по умолчанию в случае ошибки
+            setReminders([
+              {
+                user_id: user.id,
+                time: '20:00',
+                days: ['1', '2', '3', '4', '5', '6', '7'],
+                enabled: false,
+                message: 'Время записать свои эмоции в дневник!'
+              }
+            ]);
+            return;
+          }
 
-        if (data && data.length > 0) {
-          setReminders(data);
-        } else {
-          // Если напоминаний нет, создаем одно по умолчанию
+          if (data && data.length > 0) {
+            setReminders(data);
+          } else {
+            // Если напоминаний нет, создаем одно по умолчанию
+            setReminders([
+              {
+                user_id: user.id,
+                time: '20:00',
+                days: ['1', '2', '3', '4', '5', '6', '7'],
+                enabled: false,
+                message: 'Время записать свои эмоции в дневник!'
+              }
+            ]);
+          }
+        } catch (dbError) {
+          console.error('Ошибка при запросе к базе данных:', dbError);
+          // Устанавливаем напоминание по умолчанию в случае ошибки
           setReminders([
             {
-              userId: user.id,
+              user_id: user.id,
               time: '20:00',
               days: ['1', '2', '3', '4', '5', '6', '7'],
               enabled: false,
@@ -62,6 +93,16 @@ export function ReminderSettings() {
           description: 'Не удалось загрузить напоминания',
           variant: 'destructive',
         });
+        // Устанавливаем напоминание по умолчанию в случае ошибки
+        setReminders([
+          {
+            user_id: user.id,
+            time: '20:00',
+            days: ['1', '2', '3', '4', '5', '6', '7'],
+            enabled: false,
+            message: 'Время записать свои эмоции в дневник!'
+          }
+        ]);
       } finally {
         setIsLoading(false);
       }
@@ -77,7 +118,7 @@ export function ReminderSettings() {
     setReminders([
       ...reminders,
       {
-        userId: user.id,
+        user_id: user.id,
         time: '12:00',
         days: ['1', '2', '3', '4', '5'],
         enabled: false,
@@ -129,13 +170,13 @@ export function ReminderSettings() {
   const updateDay = (index: number, day: string) => {
     const newReminders = [...reminders];
     const currentDays = newReminders[index].days;
-    
+
     if (currentDays.includes(day)) {
       newReminders[index].days = currentDays.filter(d => d !== day);
     } else {
       newReminders[index].days = [...currentDays, day];
     }
-    
+
     setReminders(newReminders);
   };
 
@@ -165,7 +206,7 @@ export function ReminderSettings() {
           const { data, error } = await supabase
             .from('reminders')
             .insert({
-              userId: user.id,
+              user_id: user.id,
               time: reminder.time,
               days: reminder.days,
               enabled: reminder.enabled,
@@ -177,12 +218,12 @@ export function ReminderSettings() {
 
           // Обновляем id напоминания
           if (data && data.length > 0) {
-            const index = reminders.findIndex(r => 
-              r.time === reminder.time && 
-              r.message === reminder.message && 
+            const index = reminders.findIndex(r =>
+              r.time === reminder.time &&
+              r.message === reminder.message &&
               !r.id
             );
-            
+
             if (index !== -1) {
               const newReminders = [...reminders];
               newReminders[index].id = data[0].id;
@@ -203,6 +244,11 @@ export function ReminderSettings() {
         title: 'Напоминания сохранены',
         description: 'Ваши настройки напоминаний успешно сохранены',
       });
+
+      // Вызываем колбэк onSave, если он предоставлен
+      if (onSave) {
+        onSave();
+      }
     } catch (error) {
       console.error('Ошибка при сохранении напоминаний:', error);
       toast({
@@ -326,9 +372,9 @@ export function ReminderSettings() {
             </Card>
           ))}
 
-          <Button 
-            onClick={saveReminders} 
-            disabled={isSaving} 
+          <Button
+            onClick={saveReminders}
+            disabled={isSaving}
             className="w-full"
           >
             {isSaving ? (

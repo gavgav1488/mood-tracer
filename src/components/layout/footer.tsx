@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BookOpen, MessageSquare, Settings, Home, FileText, Shield, Sparkles, Heart, Trophy, BarChart3 } from 'lucide-react';
+import { BookOpen, MessageSquare, Settings, Home, FileText, Shield, Sparkles, Heart, Trophy, BarChart3, Tag } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -52,6 +52,12 @@ export function Footer() {
                   <Link href="/analytics" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                     <BarChart3 className="h-3.5 w-3.5" />
                     <span>Аналитика</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/tags" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                    <Tag className="h-3.5 w-3.5" />
+                    <span>Теги</span>
                   </Link>
                 </li>
                 <li>

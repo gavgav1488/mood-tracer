@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { EmojiSettings } from '@/components/settings/emoji-settings';
-import { ReminderSettings } from '@/components/settings/reminder-settings';
+import { ReminderCard } from '@/components/reminders/reminder-card';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/context/auth-context';
 
@@ -46,7 +46,7 @@ export default function SettingsPage() {
 
         <div className="space-y-8">
           <EmojiSettings onSave={handleSettingsSaved} />
-          <ReminderSettings onSave={handleSettingsSaved} />
+          <ReminderCard onSave={handleSettingsSaved} />
         </div>
       </div>
     </div>

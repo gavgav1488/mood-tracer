@@ -11,18 +11,14 @@ const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(
   ({ className, icon, iconPosition = "left", ...props }, ref) => {
     return (
       <div className="relative w-full">
-        <div
-          className={cn(
-            "absolute top-0 bottom-0 flex items-center justify-center pointer-events-none z-10",
-            iconPosition === "left" ? "left-0 pl-4" : "right-0 pr-4"
-          )}
-        >
+        {/* Иконка отображается над полем ввода, а не внутри него */}
+        <label className="block text-sm font-medium mb-1 flex items-center gap-2">
           {icon}
-        </div>
+          {props.placeholder && <span>{props.placeholder}</span>}
+        </label>
         <Input
           ref={ref}
           className={cn(
-            iconPosition === "left" ? "pl-12" : "pr-12",
             "bg-background/95 backdrop-blur-sm",
             className
           )}

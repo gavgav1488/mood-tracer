@@ -5,7 +5,11 @@ import { useReminderService } from '@/lib/reminder-service';
 
 export function ReminderHandler() {
   // Инициализируем сервис напоминаний
-  useReminderService();
+  try {
+    useReminderService();
+  } catch (error) {
+    console.error('Ошибка при инициализации сервиса напоминаний:', error);
+  }
 
   useEffect(() => {
     // Запрашиваем разрешение на уведомления при загрузке страницы

@@ -5,10 +5,10 @@ import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useSupabase } from '@/hooks/use-supabase';
 import { MoodEntry } from '@/lib/supabase';
-import { 
-  format, 
-  startOfMonth, 
-  endOfMonth, 
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
   isSameDay,
   addMonths,
   subMonths
@@ -45,41 +45,51 @@ export function MoodCalendar() {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [entries, setEntries] = useState<MoodEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<MoodEntry | null>(null);
   const { getMoodEntries } = useSupabase();
+
+  // Мемоизированная функция для фильтрации записей по текущему месяцу
+  const filterEntriesByMonth = React.useCallback((allEntries: MoodEntry[], month: Date) => {
+    const start = startOfMonth(month);
+    const end = endOfMonth(month);
+
+    return allEntries.filter(entry => {
+      const entryDate = new Date(entry.date);
+      return entryDate >= start && entryDate <= end;
+    });
+  }, []);
 
   // Загрузка записей при монтировании компонента и при изменении месяца
   useEffect(() => {
     const fetchEntries = async () => {
       setLoading(true);
+      setError(null);
+
       try {
-        const start = startOfMonth(currentMonth);
-        const end = endOfMonth(currentMonth);
         const fetchedEntries = await getMoodEntries();
-        
+
         // Фильтруем записи по текущему месяцу
-        const filteredEntries = fetchedEntries.filter(entry => {
-          const entryDate = new Date(entry.date);
-          return entryDate >= start && entryDate <= end;
-        });
-        
+        const filteredEntries = filterEntriesByMonth(fetchedEntries, currentMonth);
+
         setEntries(filteredEntries);
       } catch (error) {
         console.error('Ошибка при загрузке записей:', error);
+        setError('Не удалось загрузить записи. Пожалуйста, попробуйте позже.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchEntries();
-  }, [getMoodEntries, currentMonth]);
+  }, [getMoodEntries, currentMonth, filterEntriesByMonth]);
 
   // Обработчик выбора даты
   const handleSelect = (day: Date | undefined) => {
     if (!day) return;
-    
+
     setDate(day);
-    
+
     // Находим запись для выбранного дня
     const entry = entries.find(e => isSameDay(new Date(e.date), day));
     setSelectedEntry(entry || null);
@@ -100,34 +110,52 @@ export function MoodCalendar() {
     setCurrentMonth(new Date());
   };
 
-  // Функция для отображения дня в календаре
-  const dayRenderer = (day: Date, selectedDay: Date | undefined, props: React.HTMLAttributes<HTMLDivElement>) => {
+  // Функция для отображения дня в календаре с мемоизацией для оптимизации производительности
+  const dayRenderer = React.useCallback((day: Date, selectedDay: Date | undefined, props: React.HTMLAttributes<HTMLDivElement>) => {
     // Находим запись для текущего дня
     const entry = entries.find(e => isSameDay(new Date(e.date), day));
-    
+
     if (!entry) {
       return <div {...props}>{format(day, 'd')}</div>;
     }
-    
+
     const colors = emojiColors[entry.emoji] || emojiColors['😐'];
-    
+
     return (
       <div
         {...props}
         className={cn(
           props.className,
           colors.bg,
-          'relative flex items-center justify-center font-medium',
+          'relative flex items-center justify-center font-medium border border-border/30',
           isSameDay(day, selectedDay) ? 'ring-2 ring-primary' : ''
         )}
       >
-        <span className="absolute top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs">
-          {entry.emoji}
-        </span>
-        <span className={cn('text-sm', colors.text)}>{format(day, 'd')}</span>
+        <div className="flex flex-col items-center justify-center w-full h-full">
+          <span className={cn('text-sm font-medium', colors.text)}>{format(day, 'd')}</span>
+          <span className="text-[10px] mt-0.5">{entry.emoji}</span>
+        </div>
       </div>
     );
-  };
+  }, [entries]);
+
+  // Мемоизированное отображение легенды эмодзи
+  const EmojiLegend = React.useMemo(() => (
+    <div className="flex flex-wrap gap-2 mt-4 justify-center">
+      {Object.entries(emojiLabels).map(([emoji, label]) => (
+        <div
+          key={emoji}
+          className={cn(
+            "flex items-center gap-1 px-2 py-1 rounded-full text-xs",
+            emojiColors[emoji]?.bg
+          )}
+        >
+          <span className="text-xs">{emoji}</span>
+          <span className={cn("font-medium", emojiColors[emoji]?.text)}>{label}</span>
+        </div>
+      ))}
+    </div>
+  ), []);
 
   return (
     <div className="space-y-6">
@@ -139,6 +167,7 @@ export function MoodCalendar() {
             size="icon"
             onClick={handlePrevMonth}
             className="h-8 w-8 rounded-full"
+            disabled={loading}
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -146,6 +175,7 @@ export function MoodCalendar() {
             variant="outline"
             onClick={handleCurrentMonth}
             className="h-8 rounded-full text-xs"
+            disabled={loading}
           >
             <CalendarIcon className="mr-1 h-3.5 w-3.5" />
             Сегодня
@@ -155,11 +185,18 @@ export function MoodCalendar() {
             size="icon"
             onClick={handleNextMonth}
             className="h-8 w-8 rounded-full"
+            disabled={loading}
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
+
+      {error && (
+        <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-md text-sm">
+          {error}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
@@ -170,17 +207,26 @@ export function MoodCalendar() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={handleSelect}
-                month={currentMonth}
-                className="rounded-md border"
-                components={{
-                  Day: dayRenderer
-                }}
-                locale={ru}
-              />
+              {loading ? (
+                <div className="flex justify-center items-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+                </div>
+              ) : (
+                <>
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={handleSelect}
+                    month={currentMonth}
+                    className="rounded-md border"
+                    components={{
+                      Day: dayRenderer
+                    }}
+                    locale={ru}
+                  />
+                  {EmojiLegend}
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -190,20 +236,24 @@ export function MoodCalendar() {
             <CardHeader>
               <CardTitle>Детали записи</CardTitle>
               <CardDescription>
-                {selectedEntry 
+                {selectedEntry
                   ? format(new Date(selectedEntry.date), 'd MMMM yyyy', { locale: ru })
                   : 'Выберите день для просмотра деталей'}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {selectedEntry ? (
+              {loading ? (
+                <div className="flex justify-center items-center h-40">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+                </div>
+              ) : selectedEntry ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className={cn(
-                      "flex items-center justify-center h-12 w-12 rounded-full",
+                      "flex items-center justify-center h-10 w-10 rounded-full",
                       emojiColors[selectedEntry.emoji]?.bg || "bg-gray-100 dark:bg-gray-800"
                     )}>
-                      <span className="text-2xl">{selectedEntry.emoji}</span>
+                      <span className="text-xl">{selectedEntry.emoji}</span>
                     </div>
                     <div>
                       <div className="font-medium">
@@ -214,11 +264,11 @@ export function MoodCalendar() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {selectedEntry.note && (
                     <div className="pt-2 border-t">
                       <div className="text-sm font-medium mb-1">Заметка:</div>
-                      <div className="text-sm text-muted-foreground whitespace-pre-wrap">
+                      <div className="text-sm text-muted-foreground whitespace-pre-wrap max-h-60 overflow-y-auto">
                         {selectedEntry.note}
                       </div>
                     </div>
@@ -226,7 +276,7 @@ export function MoodCalendar() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center h-40 text-center">
-                  <CalendarIcon className="h-10 w-10 text-muted-foreground mb-2" />
+                  <CalendarIcon className="h-8 w-8 text-muted-foreground mb-2" />
                   <p className="text-muted-foreground">
                     Выберите день с записью для просмотра деталей
                   </p>

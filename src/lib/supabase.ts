@@ -9,6 +9,9 @@ export type MoodEntry = {
   note: string;
   created_at: string;
   tags?: string[];
+  intensity?: number;
+  x_position?: number;
+  y_position?: number;
 };
 
 export type Reminder = {

@@ -2,13 +2,13 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bell } from 'lucide-react';
-import { ReminderSettings as ReminderSettingsComponent } from '@/components/reminders/reminder-settings';
+import { ReminderSettings } from '@/components/reminders/reminder-settings';
 
-interface ReminderSettingsProps {
+interface ReminderCardProps {
   onSave?: () => void;
 }
 
-export function ReminderSettings({ onSave }: ReminderSettingsProps) {
+export function ReminderCard({ onSave }: ReminderCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -21,7 +21,7 @@ export function ReminderSettings({ onSave }: ReminderSettingsProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ReminderSettingsComponent />
+        <ReminderSettings onSave={onSave} />
       </CardContent>
     </Card>
   );

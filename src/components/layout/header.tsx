@@ -5,7 +5,7 @@ import { useAuth } from '@/context/auth-context';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, MessageSquare, Settings, LogOut, LogIn, Heart, Trophy, BarChart3, Moon, Sun } from 'lucide-react';
+import { BookOpen, MessageSquare, Settings, LogOut, LogIn, Heart, Trophy, BarChart3, Moon, Sun, Tag } from 'lucide-react';
 import { ThemeToggleSimple } from '@/components/theme-toggle';
 
 export function Header() {
@@ -88,6 +88,15 @@ export function Header() {
                 Обратная связь
               </Link>
               <Link
+                href="/tags"
+                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
+                  pathname === '/tags' ? 'text-primary' : 'text-muted-foreground'
+                }`}
+              >
+                <Tag className="h-4 w-4" />
+                Теги
+              </Link>
+              <Link
                 href="/settings"
                 className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
                   pathname === '/settings' ? 'text-primary' : 'text-muted-foreground'
@@ -103,7 +112,14 @@ export function Header() {
         <div className="flex items-center gap-2">
           <ThemeToggleSimple />
           {!loading && !user ? (
-            <Button asChild variant="default" className="rounded-full">
+            <Button
+              asChild
+              variant="default"
+              className="rounded-full"
+              onClick={() => {
+                console.log('Нажата кнопка Войти в хедере');
+              }}
+            >
               <Link href="/login" className="flex items-center gap-1">
                 <LogIn className="h-4 w-4" />
                 <span className="hidden sm:inline">Войти</span>
@@ -111,7 +127,14 @@ export function Header() {
             </Button>
           ) : (
             !loading && (
-              <Button variant="outline" onClick={signOut} className="rounded-full">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  console.log('Нажата кнопка Выйти в хедере');
+                  signOut();
+                }}
+                className="rounded-full"
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 <span className="hidden sm:inline">Выйти</span>
               </Button>

@@ -178,7 +178,7 @@ export const MoodEntriesList = React.forwardRef<
                   ))}
                 </div>
               )}
-            </div>
+            </AnimatedCard>
           );
         })}
       </div>
