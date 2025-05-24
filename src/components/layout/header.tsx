@@ -5,7 +5,7 @@ import { useAuth } from '@/context/auth-context';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, MessageSquare, Settings, LogOut, LogIn, Heart, Trophy, BarChart3, Moon, Sun, Tag } from 'lucide-react';
+import { BookOpen, MessageSquare, Settings, LogOut, LogIn, Heart, Trophy, BarChart3, Moon, Sun, Tag, Smile } from 'lucide-react';
 import { ThemeToggleSimple } from '@/components/theme-toggle';
 
 export function Header() {
@@ -50,6 +50,15 @@ export function Header() {
               >
                 <BookOpen className="h-4 w-4" />
                 Мой дневник
+              </Link>
+              <Link
+                href="/emmo"
+                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
+                  pathname === '/emmo' || pathname === '/emmo/history' ? 'text-primary' : 'text-muted-foreground'
+                }`}
+              >
+                <Smile className="h-4 w-4" />
+                EMMO
               </Link>
               <Link
                 href="/tips"

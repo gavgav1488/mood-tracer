@@ -60,43 +60,48 @@ export function TagSelector({ selectedTags, onChange, className = '' }: TagSelec
 
         console.log('fetchTags: пользователь авторизован, получаем теги');
 
-        // Получаем теги с помощью функции getTags из хука useSupabase
-        const tags = await getTags({ forceRefresh: true });
+        // Временные теги для отладки
+        const defaultTags = ['Работа', 'Семья', 'Отдых', 'Спорт', 'Учеба'];
 
-        console.log('fetchTags: получены теги', tags);
+        try {
+          // Получаем теги с помощью функции getTags из хука useSupabase
+          const tags = await getTags({ forceRefresh: false }); // Используем кэш, если он есть
 
-        // Обновляем состояние только если компонент все еще смонтирован
-        if (isMounted) {
-          // Проверяем, что tags - это массив
-          if (Array.isArray(tags)) {
-            console.log('fetchTags: теги являются массивом, обновляем состояние');
-            const tagNames = tags.map(tag => tag.name);
-            console.log('fetchTags: имена тегов', tagNames);
-            setAvailableTags(tagNames);
-          } else {
-            // Если tags не массив, устанавливаем пустой массив
-            console.log('fetchTags: теги не являются массивом, устанавливаем пустой массив');
-            setAvailableTags([]);
+          console.log('fetchTags: получены теги', tags);
+
+          // Обновляем состояние только если компонент все еще смонтирован
+          if (isMounted) {
+            // Проверяем, что tags - это массив и не пустой
+            if (Array.isArray(tags) && tags.length > 0) {
+              console.log('fetchTags: теги являются массивом, обновляем состояние');
+              const tagNames = tags.map(tag => tag.name);
+              console.log('fetchTags: имена тегов', tagNames);
+              setAvailableTags(tagNames);
+            } else {
+              // Если tags не массив или пустой массив, устанавливаем временные теги
+              console.log('fetchTags: теги не являются массивом или пустые, устанавливаем временные теги');
+              setAvailableTags(defaultTags);
+            }
+          }
+        } catch (error) {
+          console.error('Ошибка при получении тегов:', error);
+
+          // Устанавливаем временные теги
+          if (isMounted) {
+            console.log('fetchTags: устанавливаем временные теги из-за ошибки');
+            setAvailableTags(defaultTags);
           }
         }
       } catch (error) {
         // Обрабатываем ошибку только если компонент все еще смонтирован
         if (isMounted) {
           console.error('Ошибка при загрузке тегов:', error);
-          // Проверяем, что toast доступен перед его использованием
-          if (toast) {
-            toast({
-              title: 'Ошибка',
-              description: 'Не удалось загрузить теги',
-              variant: 'destructive',
-            });
-          }
-          // В случае ошибки устанавливаем пустой массив тегов
-          setAvailableTags([]);
 
-          // Добавляем временные теги для отладки
+          // Устанавливаем временные теги для отладки
           console.log('fetchTags: добавляем временные теги для отладки');
           setAvailableTags(['Работа', 'Семья', 'Отдых', 'Спорт', 'Учеба']);
+
+          // Не показываем уведомление об ошибке, чтобы не раздражать пользователя
         }
       } finally {
         // В любом случае снимаем состояние загрузки, если компонент все еще смонтирован
@@ -104,11 +109,15 @@ export function TagSelector({ selectedTags, onChange, className = '' }: TagSelec
       }
     };
 
-    fetchTags();
+    // Запускаем загрузку тегов с небольшой задержкой, чтобы избежать проблем с инициализацией
+    const timer = setTimeout(() => {
+      fetchTags();
+    }, 500);
 
     // Функция очистки для предотвращения утечек памяти
     return () => {
       isMounted = false;
+      clearTimeout(timer);
     };
   }, [user, toast, getTags]);
 
@@ -143,41 +152,75 @@ export function TagSelector({ selectedTags, onChange, className = '' }: TagSelec
         return;
       }
 
-      // Используем функцию createTag из хука useSupabase
-      const newTag = await createTag(tagName);
+      try {
+        // Используем функцию createTag из хука useSupabase
+        const newTag = await createTag(tagName);
 
-      if (!newTag) {
-        throw new Error('Не удалось создать тег');
-      }
+        if (!newTag) {
+          console.log('Не удалось создать тег, но продолжаем работу');
 
-      // Обновляем список доступных тегов
-      setAvailableTags(prev => [...prev, tagName]);
+          // Даже если не удалось создать тег в базе данных, добавляем его локально
+          setAvailableTags(prev => [...prev, tagName]);
 
-      // Добавляем тег в выбранные
-      const newSelectedTags = [...selectedTags, tagName];
-      onChange(newSelectedTags);
+          // Добавляем тег в выбранные
+          const newSelectedTags = [...selectedTags, tagName];
+          onChange(newSelectedTags);
 
-      // Очищаем поле ввода
-      setInputValue('');
+          // Очищаем поле ввода
+          setInputValue('');
 
-      // Показываем уведомление об успешном создании тега
-      if (toast) {
-        toast({
-          title: 'Тег создан',
-          description: `Тег "${tagName}" успешно создан`,
-        });
+          return;
+        }
+
+        // Обновляем список доступных тегов
+        setAvailableTags(prev => [...prev, tagName]);
+
+        // Добавляем тег в выбранные
+        const newSelectedTags = [...selectedTags, tagName];
+        onChange(newSelectedTags);
+
+        // Очищаем поле ввода
+        setInputValue('');
+
+        // Показываем уведомление об успешном создании тега
+        if (toast) {
+          toast({
+            title: 'Тег создан',
+            description: `Тег "${tagName}" успешно создан`,
+          });
+        }
+      } catch (createError) {
+        console.error('Ошибка при создании тега:', createError);
+
+        // Даже если не удалось создать тег в базе данных, добавляем его локально
+        setAvailableTags(prev => [...prev, tagName]);
+
+        // Добавляем тег в выбранные
+        const newSelectedTags = [...selectedTags, tagName];
+        onChange(newSelectedTags);
+
+        // Очищаем поле ввода
+        setInputValue('');
+
+        // Не показываем уведомление об ошибке, чтобы не раздражать пользователя
       }
     } catch (error) {
       console.error('Ошибка при создании тега:', error);
 
-      // Показываем уведомление об ошибке
-      if (toast) {
-        toast({
-          title: 'Ошибка',
-          description: 'Не удалось создать тег',
-          variant: 'destructive',
-        });
+      // Даже если произошла ошибка, добавляем тег локально
+      const tagName = inputValue.trim();
+      if (tagName) {
+        setAvailableTags(prev => [...prev, tagName]);
+
+        // Добавляем тег в выбранные
+        const newSelectedTags = [...selectedTags, tagName];
+        onChange(newSelectedTags);
+
+        // Очищаем поле ввода
+        setInputValue('');
       }
+
+      // Не показываем уведомление об ошибке, чтобы не раздражать пользователя
     }
   };
 

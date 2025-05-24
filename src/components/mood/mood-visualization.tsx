@@ -15,6 +15,8 @@ const emojiColors: Record<string, { primary: string; secondary: string; backgrou
   '😢': { primary: '#4682B4', secondary: '#1E90FF', background: '#F0F8FF' }, // Грусть: синий
   '🥳': { primary: '#FF69B4', secondary: '#FF1493', background: '#FFF0F5' }, // Восторг: розовый
   '😤': { primary: '#DC143C', secondary: '#B22222', background: '#FFF0F0' }, // Злость: красный
+  '😡': { primary: '#FF0000', secondary: '#FF4500', background: '#FFF0F0' }, // Злость (сильная): ярко-красный
+  '😠': { primary: '#FF6347', secondary: '#FF7F50', background: '#FFF5EE' }, // Раздражение: томатный
   '😴': { primary: '#9370DB', secondary: '#8A2BE2', background: '#F8F4FF' }, // Усталость: фиолетовый
   '😰': { primary: '#20B2AA', secondary: '#48D1CC', background: '#F0FFFF' }, // Тревога: бирюзовый
 };
@@ -66,7 +68,7 @@ export function MoodVisualization({ emoji, className = '' }: MoodVisualizationPr
         display() {
           p.noStroke();
           p.fill(this.color);
-          
+
           // Разные формы для разных эмодзи
           if (emoji === '😊' || emoji === '🥳') {
             // Звезды для радости и восторга
@@ -74,8 +76,8 @@ export function MoodVisualization({ emoji, className = '' }: MoodVisualizationPr
           } else if (emoji === '😢' || emoji === '😰') {
             // Капли для грусти и тревоги
             this.drawDrop(this.x, this.y, this.size);
-          } else if (emoji === '😤') {
-            // Треугольники для злости
+          } else if (emoji === '😤' || emoji === '😡' || emoji === '😠') {
+            // Треугольники для злости и раздражения
             this.drawTriangle(this.x, this.y, this.size);
           } else {
             // Круги для остальных
@@ -121,18 +123,18 @@ export function MoodVisualization({ emoji, className = '' }: MoodVisualizationPr
       p.setup = () => {
         const canvas = p.createCanvas(containerRef.current!.offsetWidth, 300);
         canvas.parent(containerRef.current!);
-        
+
         // Создаем частицы
         for (let i = 0; i < particleCount; i++) {
           particles.push(new Particle());
         }
-        
+
         p.background(colors.background);
       };
 
       p.draw = () => {
         p.background(colors.background);
-        
+
         // Обновляем и отображаем частицы
         for (let particle of particles) {
           particle.update();

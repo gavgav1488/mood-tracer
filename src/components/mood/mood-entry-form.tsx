@@ -65,7 +65,8 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
 
       setIsSuccess(true);
       resetForm();
-      setTimeout(() => setIsSuccess(false), 3000);
+      // Увеличиваем время отображения сакуры до 10 секунд
+      setTimeout(() => setIsSuccess(false), 10000);
     } catch (error) {
       console.error('Ошибка при сохранении записи:', error);
       setError('Не удалось сохранить запись. Пожалуйста, попробуйте позже.');
@@ -94,12 +95,34 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
         </Alert>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-card rounded-xl border p-4">
             <EmojiPicker selectedEmoji={emoji} onSelect={setEmoji} />
           </div>
 
+          {isSuccess ? (
+            <div className="bg-card rounded-xl border p-4 relative">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-medium">Ваша запись сохранена!</h3>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  asChild
+                  className="rounded-full"
+                  title="Открыть в полноэкранном режиме"
+                >
+                  <Link href={`/visualization?emoji=${encodeURIComponent(emoji)}`}>
+                    <Maximize2 className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+              <EnhancedMoodVisualizationClient emoji={emoji} visualType="sakura" />
+            </div>
+          ) : null}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-card rounded-xl border p-4 space-y-3">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-medium">Заметка</h3>
@@ -124,34 +147,14 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
             />
           </div>
         </div>
-
-        <div className="space-y-6">
-          <div className="bg-card rounded-xl border p-4 relative">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-lg font-medium">Визуализация</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                asChild
-                className="rounded-full"
-                title="Открыть в полноэкранном режиме"
-              >
-                <Link href={`/visualization?emoji=${encodeURIComponent(emoji)}`}>
-                  <Maximize2 className="h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-            <EnhancedMoodVisualizationClient emoji={emoji} />
-          </div>
-        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t">
         <div>
           {isSuccess && (
-            <div className="flex items-center text-sm text-green-600 dark:text-green-400">
+            <div className="flex items-center text-sm text-rose-600 dark:text-rose-400">
               <Sparkles className="mr-1 h-4 w-4" />
-              Запись успешно сохранена!
+              Запись успешно сохранена! Полюбуйтесь цветущей сакурой!
             </div>
           )}
         </div>

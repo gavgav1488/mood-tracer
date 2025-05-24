@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { Save, RefreshCw, Sparkles, Tag, Info } from 'lucide-react';
+import { Save, RefreshCw, Sparkles, Tag, Info, History } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { useSupabase } from '@/hooks/use-supabase';
@@ -14,6 +14,7 @@ import { TagSelector } from '@/components/tags/tag-selector';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
 import p5 from 'p5';
 
 // Определение типов эмоций и их координат на карте
@@ -71,7 +72,7 @@ export function EmmoStyleTracker({ onEntryCreated }: EmmoStyleTrackerProps) {
   const [error, setError] = useState<string | null>(null);
   const { createMoodEntry, clearCache, updateEntryTags } = useSupabase();
   const { user } = useAuth();
-  
+
   const canvasRef = useRef<HTMLDivElement>(null);
   const sketchRef = useRef<p5 | null>(null);
 
@@ -101,7 +102,7 @@ export function EmmoStyleTracker({ onEntryCreated }: EmmoStyleTrackerProps) {
 
       p.draw = () => {
         p.background(currentEmotion.color + '20'); // Полупрозрачный фон текущей эмоции
-        
+
         // Рисуем градиентный фон
         for (let x = 0; x < p.width; x += 10) {
           for (let y = 0; y < p.height; y += 10) {
@@ -118,16 +119,16 @@ export function EmmoStyleTracker({ onEntryCreated }: EmmoStyleTrackerProps) {
         EMOTION_MAP.forEach(emotion => {
           const x = (emotion.x / 100) * p.width;
           const y = (emotion.y / 100) * p.height;
-          
+
           // Рисуем круг
           p.noStroke();
           p.fill(emotion.color + '80');
           p.ellipse(x, y, 60, 60);
-          
+
           // Рисуем эмодзи
           p.fill(0);
           p.text(emotion.emoji, x, y);
-          
+
           // Рисуем название эмоции
           p.textSize(12);
           p.text(emotion.label, x, y + 30);
@@ -137,21 +138,21 @@ export function EmmoStyleTracker({ onEntryCreated }: EmmoStyleTrackerProps) {
         // Рисуем текущую позицию пользователя
         const userX = (position.x / 100) * p.width;
         const userY = (position.y / 100) * p.height;
-        
+
         // Пульсирующий эффект
         const pulseSize = 30 + Math.sin(p.frameCount * 0.1) * 5;
-        
+
         // Внешний круг (пульсирующий)
         p.noFill();
         p.stroke(currentEmotion.color);
         p.strokeWeight(2);
         p.ellipse(userX, userY, pulseSize + 20, pulseSize + 20);
-        
+
         // Внутренний круг
         p.fill(currentEmotion.color);
         p.noStroke();
         p.ellipse(userX, userY, pulseSize, pulseSize);
-        
+
         // Текущая эмоция
         p.fill(255);
         p.text(currentEmotion.emoji, userX, userY);
@@ -242,6 +243,12 @@ export function EmmoStyleTracker({ onEntryCreated }: EmmoStyleTrackerProps) {
           </div>
           <h2 className="text-2xl font-semibold">Как вы себя чувствуете сегодня?</h2>
         </div>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/emmo/history">
+            <History className="mr-2 h-4 w-4" />
+            История эмоций
+          </Link>
+        </Button>
       </div>
 
       {error && (
@@ -272,7 +279,7 @@ export function EmmoStyleTracker({ onEntryCreated }: EmmoStyleTrackerProps) {
         </CardHeader>
         <CardContent>
           <div ref={canvasRef} className="w-full h-[300px] rounded-lg overflow-hidden mb-4" />
-          
+
           <div className="mt-6 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
@@ -290,7 +297,7 @@ export function EmmoStyleTracker({ onEntryCreated }: EmmoStyleTrackerProps) {
                 </div>
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <label htmlFor="intensity" className="text-sm font-medium">
                 Интенсивность эмоции
@@ -304,7 +311,7 @@ export function EmmoStyleTracker({ onEntryCreated }: EmmoStyleTrackerProps) {
                 onValueChange={(value) => setIntensity(value[0])}
               />
             </div>
-            
+
             <div className="space-y-2">
               <label htmlFor="note" className="text-sm font-medium">
                 Заметка (необязательно)
@@ -317,7 +324,7 @@ export function EmmoStyleTracker({ onEntryCreated }: EmmoStyleTrackerProps) {
                 onChange={(e) => setNote(e.target.value)}
               />
             </div>
-            
+
             <div className="space-y-2">
               <label className="text-sm font-medium flex items-center gap-1">
                 <Tag className="h-4 w-4" />

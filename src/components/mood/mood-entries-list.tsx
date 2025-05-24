@@ -30,6 +30,8 @@ export const MoodEntriesList = React.forwardRef<
       '😢': 'Грусть',
       '🥳': 'Восторг',
       '😤': 'Злость',
+      '😡': 'Злость',
+      '😠': 'Раздражение',
       '😴': 'Усталость',
       '😰': 'Тревога',
     };
@@ -134,10 +136,22 @@ export const MoodEntriesList = React.forwardRef<
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 blur-sm"></div>
-                    <div className="relative flex items-center justify-center h-12 w-12 rounded-full bg-card border">
-                      <span className="text-xl">{entry.emoji}</span>
-                    </div>
+                    {/* Специальные стили для эмоции "Злость" */}
+                    {(entry.emoji === '😤' || entry.emoji === '😡' || entry.emoji === '😠') ? (
+                      <>
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-500/30 to-orange-500/30 blur-sm animate-pulse"></div>
+                        <div className="relative flex items-center justify-center h-12 w-12 rounded-full bg-card border border-red-400/50 shadow-[0_0_10px_rgba(239,68,68,0.3)]">
+                          <span className="text-xl">{entry.emoji}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 blur-sm"></div>
+                        <div className="relative flex items-center justify-center h-12 w-12 rounded-full bg-card border">
+                          <span className="text-xl">{entry.emoji}</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div>
                     <div className="font-medium flex items-center">
