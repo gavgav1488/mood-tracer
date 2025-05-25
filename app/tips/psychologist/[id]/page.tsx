@@ -70,11 +70,11 @@ export default function PsychologistTipPage() {
               <span>{tip.author}</span>
             </div>
             <div>
-              <a 
-                href={tip.sourceUrl} 
-                target="_blank" 
+              <a
+                href={tip.sourceUrl}
+                target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-primary hover:underline"
+                className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors"
               >
                 <ExternalLink className="h-4 w-4" />
                 <span>{tip.source}</span>

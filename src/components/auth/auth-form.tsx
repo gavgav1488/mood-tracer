@@ -221,7 +221,7 @@ export function AuthForm() {
     <div>
       {/* Кнопка возврата на главную */}
       <div className="mb-6">
-        <Link href="/" className="inline-flex items-center text-sm text-primary hover:underline">
+        <Link href="/" className="inline-flex items-center text-sm text-primary hover:text-primary/80 transition-colors">
           <ArrowLeft className="mr-1 h-4 w-4" />
           Вернуться на главную
         </Link>
@@ -275,7 +275,7 @@ export function AuthForm() {
                   <button
                     type="button"
                     onClick={handlePasswordReset}
-                    className="text-xs text-primary hover:underline"
+                    className="text-xs text-primary hover:text-primary/80 transition-colors"
                     disabled={isLoading !== null}
                   >
                     Забыли пароль?
@@ -320,7 +320,7 @@ export function AuthForm() {
                   setError(null);
                   setSuccessMessage(null);
                 }}
-                className="text-sm text-primary hover:underline"
+                className="text-sm text-primary hover:text-primary/80 transition-colors"
                 disabled={isLoading !== null}
               >
                 {isSignUp ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}
@@ -451,7 +451,7 @@ export function AuthForm() {
           </p>
         </div>
         <p className="text-xs text-muted-foreground text-center">
-          При входе вы соглашаетесь с <a href="/privacy" className="text-primary hover:underline transition-all">политикой конфиденциальности</a>
+          При входе вы соглашаетесь с <a href="/privacy" className="text-primary hover:text-primary/80 transition-all">политикой конфиденциальности</a>
         </p>
       </div>
     </div>

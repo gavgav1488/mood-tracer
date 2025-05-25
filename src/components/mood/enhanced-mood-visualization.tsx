@@ -43,7 +43,7 @@ const emojiColors: Record<string, { primary: string; secondary: string; backgrou
 const sakuraColors = {
   primary: '#FFB7C5',    // Светло-розовый
   secondary: '#FF758C',  // Розовый
-  background: 'linear-gradient(to bottom, #FFF8DC, #FFF0F5)', // Градиентный фон
+  background: '#FFF8DC', // Кремовый фон
   branch: '#8B4513',     // Коричневый для веток
 };
 
@@ -280,7 +280,7 @@ export function EnhancedMoodVisualization({
         constructor(x?: number, y?: number) {
           this.x = x !== undefined ? x : p.random(-50, p.width + 50);
           this.y = y !== undefined ? y : p.random(-100, -10); // Начинаем выше экрана
-          this.size = p.random(6, 14) * particleSize;
+          this.size = p.random(20, 40) * particleSize; // Еще больше увеличили размер лепестков
 
           // Больше разнообразия в цветах
           const colorChoice = p.random();
@@ -292,28 +292,28 @@ export function EnhancedMoodVisualization({
             this.color = '#FFC0CB'; // Светло-розовый
           }
 
-          this.speed = p.random(0.3, 1.2) * particleSpeed;
+          this.speed = p.random(3, 6) * particleSpeed; // Значительно увеличили скорость падения
           this.direction = p.PI / 2 + p.random(-0.3, 0.3); // Падение вниз с отклонением
           this.rotation = p.random(p.TWO_PI);
-          this.rotationSpeed = p.random(-0.03, 0.03);
-          this.swayFactor = p.random(0.8, 2.5);
+          this.rotationSpeed = p.random(-0.12, 0.12); // Еще больше увеличили скорость вращения
+          this.swayFactor = p.random(2, 5); // Увеличили амплитуду колебаний
           this.swayOffset = p.random(p.TWO_PI);
         }
 
         update() {
           // Более сложное движение лепестка
-          const time = p.frameCount * 0.01;
+          const time = p.frameCount * 0.04; // Еще больше увеличили скорость анимации
 
           // Основное колебание из стороны в сторону
           const sway = Math.sin(time + this.swayOffset) * this.swayFactor;
 
           // Дополнительное вертикальное колебание для более реалистичного падения
-          const verticalSway = Math.sin(time * 1.5 + this.swayOffset) * 0.5;
+          const verticalSway = Math.sin(time * 3 + this.swayOffset) * 1.2; // Увеличили амплитуду и частоту
 
           // Движение по X с колебанием
-          this.x += Math.cos(this.direction + sway * 0.3) * this.speed + sway * 0.2;
+          this.x += Math.cos(this.direction + sway * 0.5) * this.speed + sway * 0.6;
 
-          // Движение по Y с небольшими колебаниями
+          // Движение по Y с небольшими колебаниями - основная скорость падения
           this.y += Math.sin(this.direction) * this.speed + verticalSway;
 
           // Вращение лепестка
@@ -324,8 +324,8 @@ export function EnhancedMoodVisualization({
             this.y = p.random(-100, -10);
             this.x = p.random(-50, p.width + 50);
             // Немного варьируем параметры при возрождении
-            this.speed = p.random(0.3, 1.2) * particleSpeed;
-            this.swayFactor = p.random(0.8, 2.5);
+            this.speed = p.random(3, 6) * particleSpeed; // Обновили диапазон скорости
+            this.swayFactor = p.random(2, 5); // Обновили диапазон колебаний
           }
 
           // Если лепесток вышел за боковые границы, плавно возвращаем его
@@ -625,8 +625,8 @@ export function EnhancedMoodVisualization({
         p.background(colors.background);
 
         if (visualType === 'sakura') {
-          // Создаем только падающие лепестки сакуры
-          for (let i = 0; i < particleCount; i++) {
+          // Создаем много падающих лепестков сакуры для впечатляющего эффекта
+          for (let i = 0; i < particleCount * 2; i++) {
             particles.push(new SakuraPetal());
           }
         } else {
@@ -746,13 +746,8 @@ export function EnhancedMoodVisualization({
 
       p.draw = () => {
         if (visualType === 'sakura') {
-          // Создаем градиентный фон для сакуры
-          for (let i = 0; i <= p.height; i++) {
-            const inter = p.map(i, 0, p.height, 0, 1);
-            const c = p.lerpColor(p.color('#FFF8DC'), p.color('#FFF0F5'), inter);
-            p.stroke(c);
-            p.line(0, i, p.width, i);
-          }
+          // Используем простой фон для сакуры
+          p.background(sakuraColors.background);
         } else {
           p.background(colors.background);
         }

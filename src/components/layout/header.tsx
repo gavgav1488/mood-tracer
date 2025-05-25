@@ -5,7 +5,14 @@ import { useAuth } from '@/context/auth-context';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, MessageSquare, Settings, LogOut, LogIn, Heart, Trophy, BarChart3, Moon, Sun, Tag, Smile } from 'lucide-react';
+import { BookOpen, MessageSquare, Settings, LogOut, LogIn, Heart, Trophy, BarChart3, Moon, Sun, Tag, Smile, TrendingUp, Users, UserPlus, ChevronDown } from 'lucide-react';
+import {
+  CaretDownOutlined,
+  HeartFilled,
+  UserOutlined as AntUserOutlined,
+  SettingOutlined as AntSettingOutlined,
+  GiftOutlined
+} from '../icons/ant-icons';
 import { ThemeToggleSimple } from '@/components/theme-toggle';
 
 export function Header() {
@@ -13,140 +20,104 @@ export function Header() {
   const { user, loading, signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between py-4">
-        <div className="flex items-center gap-6">
+    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-sm border-b border-border sakura-petals">
+      <div className="container flex h-18 items-center justify-between py-4">
+        <div className="flex items-center gap-8">
           <Link
             href="/"
-            className="flex items-center gap-2 font-bold text-xl bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent"
+            className="flex items-center gap-3 group transition-all duration-300 hover:scale-105"
           >
-            <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-4 w-4 text-primary"
-              >
-                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                <polyline points="14 2 14 8 20 8" />
-                <path d="M12 18v-6" />
-                <path d="M8 15h8" />
-              </svg>
+            <span className="text-3xl animate-gentle-bounce">🌸</span>
+            <div>
+              <div className="font-picnote text-xl sm:text-2xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                MOOD TRACER
+              </div>
+              <div className="text-xs font-soft text-muted-foreground">
+                Дневник настроения
+              </div>
             </div>
-            Дневник настроения
           </Link>
 
-          {!loading && user && (
-            <nav className="hidden md:flex gap-6">
+          {/* Navigation - всегда показываем */}
+          <nav className="hidden md:flex items-center space-x-8">
+            {[
+              { href: '/', label: 'Главная' },
+              { href: '/diary', label: 'Дневник' },
+              { href: '/analytics', label: 'Аналитика' },
+              { href: '/achievements', label: 'Достижения' },
+              { href: '/feedback', label: 'Отзывы' },
+            ].map((item) => (
               <Link
-                href="/diary"
-                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
-                  pathname === '/diary' ? 'text-primary' : 'text-muted-foreground'
-                }`}
+                key={item.href}
+                href={item.href}
+                className="font-ui text-muted-foreground hover:text-primary transition-colors relative group"
               >
-                <BookOpen className="h-4 w-4" />
-                Мой дневник
+                {item.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link
-                href="/emmo"
-                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
-                  pathname === '/emmo' || pathname === '/emmo/history' ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                <Smile className="h-4 w-4" />
-                EMMO
-              </Link>
-              <Link
-                href="/tips"
-                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
-                  pathname === '/tips' ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                <Heart className="h-4 w-4" />
-                Советы
-              </Link>
-              <Link
-                href="/achievements"
-                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
-                  pathname === '/achievements' ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                <Trophy className="h-4 w-4" />
-                Достижения
-              </Link>
-              <Link
-                href="/analytics"
-                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
-                  pathname === '/analytics' ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                <BarChart3 className="h-4 w-4" />
-                Аналитика
-              </Link>
-              <Link
-                href="/feedback"
-                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
-                  pathname === '/feedback' ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                <MessageSquare className="h-4 w-4" />
-                Обратная связь
-              </Link>
-              <Link
-                href="/tags"
-                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
-                  pathname === '/tags' ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                <Tag className="h-4 w-4" />
-                Теги
-              </Link>
-              <Link
-                href="/settings"
-                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
-                  pathname === '/settings' ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                <Settings className="h-4 w-4" />
-                Настройки
-              </Link>
-            </nav>
-          )}
+            ))}
+          </nav>
         </div>
 
-        <div className="flex items-center gap-2">
-          <ThemeToggleSimple />
+        <div className="flex items-center gap-4">
           {!loading && !user ? (
-            <Button
-              asChild
-              variant="default"
-              className="rounded-full"
-              onClick={() => {
-                console.log('Нажата кнопка Войти в хедере');
-              }}
-            >
-              <Link href="/login" className="flex items-center gap-1">
-                <LogIn className="h-4 w-4" />
-                <span className="hidden sm:inline">Войти</span>
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/login"
+                className="font-ui text-primary hover:text-primary/80 transition-colors"
+              >
+                Войти
               </Link>
-            </Button>
+              <Link
+                href="/register"
+                className="picnote-button px-6 py-2 text-sm"
+              >
+                Регистрация
+              </Link>
+            </div>
           ) : (
             !loading && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  console.log('Нажата кнопка Выйти в хедере');
-                  signOut();
-                }}
-                className="rounded-full"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Выйти</span>
-              </Button>
+              <div className="flex items-center gap-3">
+                {/* User Menu */}
+                <div className="relative group">
+                  <button className="glass-button rounded-2xl font-medium px-4 py-2 hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
+                      <AntUserOutlined className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="hidden sm:inline text-sm">Профиль</span>
+                    <CaretDownOutlined className="h-4 w-4 transition-transform group-hover:rotate-180" />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  <div className="absolute right-0 top-full mt-2 w-48 glass-card rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                    <div className="p-2">
+                      <Link href="/profile" className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-primary/10 transition-colors">
+                        <AntUserOutlined className="h-4 w-4 text-primary" />
+                        <span className="text-sm">Мой профиль</span>
+                      </Link>
+                      <Link href="/achievements" className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-primary/10 transition-colors">
+                        <GiftOutlined className="h-4 w-4 text-primary" />
+                        <span className="text-sm">Достижения</span>
+                      </Link>
+                      <Link href="/settings" className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-primary/10 transition-colors">
+                        <AntSettingOutlined className="h-4 w-4 text-primary" />
+                        <span className="text-sm">Настройки</span>
+                      </Link>
+                      <hr className="my-2 border-border" />
+                      <button
+                        onClick={() => {
+                          console.log('Нажата кнопка Выйти в хедере');
+                          signOut();
+                        }}
+                        className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-destructive/10 transition-colors text-left"
+                      >
+                        <LogOut className="h-4 w-4 text-destructive" />
+                        <span className="text-sm text-destructive">Выйти</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )
           )}
         </div>

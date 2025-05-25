@@ -74,7 +74,19 @@ export function TagSelector({ selectedTags, onChange, className = '' }: TagSelec
             // Проверяем, что tags - это массив и не пустой
             if (Array.isArray(tags) && tags.length > 0) {
               console.log('fetchTags: теги являются массивом, обновляем состояние');
-              const tagNames = tags.map(tag => tag.name);
+
+              // Проверяем, являются ли элементы объектами с полем name или строками
+              const tagNames = tags.map(tag => {
+                if (typeof tag === 'string') {
+                  return tag;
+                } else if (tag && typeof tag === 'object' && tag.name) {
+                  return tag.name;
+                } else {
+                  console.warn('Неожиданный формат тега:', tag);
+                  return String(tag);
+                }
+              });
+
               console.log('fetchTags: имена тегов', tagNames);
               setAvailableTags(tagNames);
             } else {

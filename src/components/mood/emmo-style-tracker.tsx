@@ -239,7 +239,9 @@ export function EmmoStyleTracker({ onEntryCreated }: EmmoStyleTrackerProps) {
         <div className="space-y-1">
           <div className="inline-flex items-center space-x-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
             <Sparkles className="h-4 w-4" />
-            <span>{format(new Date(), 'EEEE, d MMMM', { locale: ru })}</span>
+            <span>
+              Сегодня, {format(new Date(), 'd MMMM', { locale: ru })}
+            </span>
           </div>
           <h2 className="text-2xl font-semibold">Как вы себя чувствуете сегодня?</h2>
         </div>

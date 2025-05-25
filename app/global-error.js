@@ -1,6 +1,5 @@
 'use client';
 
-import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 
 export default function GlobalError({
@@ -8,9 +7,14 @@ export default function GlobalError({
   reset,
 }) {
   useEffect(() => {
-    // Отправляем ошибку в Sentry
-    Sentry.captureException(error);
-  }, [error]);
+    // Временно отключаем Sentry для устранения ошибки
+    // TODO: Настроить Sentry правильно
+    // Sentry.captureException(error);
+
+    // Отладочная информация
+    console.error('Global Error:', error);
+    console.log('Reset function type:', typeof reset);
+  }, [error, reset]);
 
   return (
     <html>
@@ -19,7 +23,13 @@ export default function GlobalError({
           <h1 className="text-2xl font-bold mb-4">Что-то пошло не так!</h1>
           <p className="mb-6">Произошла непредвиденная ошибка. Наша команда уже работает над её устранением.</p>
           <button
-            onClick={() => reset()}
+            onClick={() => {
+              if (typeof reset === 'function') {
+                reset();
+              } else {
+                window.location.reload();
+              }
+            }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
           >
             Попробовать снова

@@ -1,96 +1,808 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
+    /* === SAKURA PICNOTE DESIGN SYSTEM === */
+
+    /* Soft Pink Background */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 270 50% 25%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 270 50% 25%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Sakura Primary - Pink-Purple */
+    --primary: 320 80% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Soft Purple Secondary */
+    --secondary: 280 40% 85%;
+    --secondary-foreground: 270 50% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Light Pink Muted */
+    --muted: 330 30% 95%;
+    --muted-foreground: 270 40% 35%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Lavender Accent */
+    --accent: 270 50% 80%;
+    --accent-foreground: 270 50% 25%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Soft Green Success */
+    --success: 140 40% 65%;
+    --success-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Soft Orange Warning */
+    --warning: 25 70% 70%;
+    --warning-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    --destructive: 0 60% 65%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Soft Pink Borders */
+    --border: 0 0% 85%;
+    --input: 330 20% 95%;
+    --ring: 320 70% 65%;
+
+    /* Sakura Effects */
+    --glass-bg: 330 50% 98% / 0.8;
+    --glass-border: 320 40% 85% / 0.4;
+    --glass-shadow: 320 30% 70% / 0.1;
+
+    --radius: 1rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* === DARK MODE - COSMIC THEME === */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --background: 240 15% 8%;
+    --foreground: 280 20% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --card: 240 15% 10%;
+    --card-foreground: 280 20% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --popover: 240 15% 10%;
+    --popover-foreground: 280 20% 95%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Neon Primary - Electric Purple */
+    --primary: 280 100% 75%;
+    --primary-foreground: 240 15% 8%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Dark Secondary */
+    --secondary: 240 15% 15%;
+    --secondary-foreground: 280 20% 90%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Dark Muted */
+    --muted: 240 15% 12%;
+    --muted-foreground: 280 10% 65%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* Neon Accent - Bright Pink */
+    --accent: 320 100% 75%;
+    --accent-foreground: 240 15% 8%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* Dark Success */
+    --success: 140 60% 55%;
+    --success-foreground: 240 15% 8%;
+
+    /* Dark Warning */
+    --warning: 35 90% 60%;
+    --warning-foreground: 240 15% 8%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 280 20% 95%;
+
+    /* Dark Borders */
+    --border: 240 15% 18%;
+    --input: 240 15% 18%;
+    --ring: 280 100% 75%;
+
+    /* Dark Glassmorphism */
+    --glass-bg: 240 15% 10% / 0.8;
+    --glass-border: 280 40% 25% / 0.3;
+    --glass-shadow: 0 0% 0% / 0.3;
   }
 }
 
 @layer base {
   * {
-    border-color: #e5e7eb;
+    border-color: hsl(var(--border));
   }
-  .dark * {
-    border-color: #1f2937;
-  }
+
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  /* Убираем все подчёркивания */
+  a {
+    text-decoration: none !important;
+  }
+
+  a:hover {
+    text-decoration: none !important;
+  }
+
+  /* Улучшенная типографика */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.5rem; }
+
+  /* Picnote style для заголовков - теперь рукописный */
+  .font-picnote {
+    font-family: 'Caveat', cursive !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.01em !important;
+    color: #b19cd9 !important;
+  }
+
+  /* Soft style для основного текста - теперь рукописный */
+  .font-soft {
+    font-family: 'Kalam', cursive !important;
+    font-weight: 400 !important;
+    line-height: 1.7;
+    letter-spacing: 0.005em !important;
+    color: #c8b5db !important;
+  }
+
+  /* UI style для элементов интерфейса - теперь тоже рукописный */
+  .font-ui {
+    font-family: 'Kalam', cursive !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.005em !important;
+    color: #b8a9d1 !important;
+  }
+
+  /* Handwritten style для рукописного текста */
+  .font-handwritten {
+    font-family: 'Caveat', cursive !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.01em !important;
+    color: #b19cd9 !important;
+  }
+}
+
+@layer components {
+  /* === PICNOTE SAKURA COMPONENTS === */
+
+  /* Sakura Card - основные карточки */
+  .sakura-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px hsl(var(--glass-shadow));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sakura-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px hsl(var(--primary) / 0.15);
+    border-color: hsl(var(--primary) / 0.3);
+  }
+
+  /* Feature Card - карточки функций */
+  .feature-card {
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
+    border: 1px solid hsl(var(--border));
+    border-radius: 2rem;
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 16px 50px hsl(var(--primary) / 0.2);
+  }
+
+  /* Picnote Button - основные кнопки */
+  .picnote-button {
+    background: linear-gradient(135deg, hsl(320 80% 55%) 0%, hsl(280 70% 60%) 100%);
+    color: white;
+    border: none;
+    border-radius: 2rem;
+    padding: 1rem 2rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(220, 38, 127, 0.4);
+  }
+
+  .picnote-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(220, 38, 127, 0.6);
+    background: linear-gradient(135deg, hsl(320 85% 50%) 0%, hsl(280 75% 55%) 100%);
+  }
+
+  /* Input Field - поля ввода */
+  .picnote-input {
+    background: hsl(var(--input));
+    border: 2px solid hsl(var(--border));
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .picnote-input:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+    outline: none;
+  }
+
+  .glass-button {
+    background: hsl(var(--glass-bg));
+    border: 2px solid hsl(var(--glass-border));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-button:hover {
+    background: hsl(var(--primary) / 0.1);
+    border-color: hsl(var(--primary) / 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px hsl(var(--primary) / 0.2);
+  }
+
+  /* Kawaii Button - очень милые кнопки */
+  .kawaii-button {
+    background: linear-gradient(135deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--accent)) 100%);
+    border: none;
+    border-radius: 2rem;
+    padding: 0.75rem 1.5rem;
+    font-family: 'Comfortaa', sans-serif;
+    font-weight: 600;
+    color: white;
+    box-shadow:
+      0 8px 25px hsl(var(--primary) / 0.3),
+      0 3px 10px hsl(var(--primary) / 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .kawaii-button:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow:
+      0 15px 40px hsl(var(--primary) / 0.4),
+      0 6px 15px hsl(var(--primary) / 0.3);
+  }
+
+  .kawaii-button:active {
+    transform: translateY(-1px) scale(1.02);
+  }
+
+  /* === SAKURA GRADIENT BACKGROUNDS === */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--accent)) 100%);
+  }
+
+  .bg-gradient-secondary {
+    background: linear-gradient(135deg,
+      hsl(var(--secondary)) 0%,
+      hsl(var(--muted)) 100%);
+  }
+
+  .bg-gradient-sakura {
+    background: linear-gradient(135deg,
+      hsl(320 70% 85%) 0%,
+      hsl(280 50% 90%) 50%,
+      hsl(330 60% 95%) 100%);
+  }
+
+  .bg-gradient-hero {
+    background: linear-gradient(135deg,
+      hsl(330 30% 98%) 0%,
+      hsl(320 25% 96%) 50%,
+      hsl(280 20% 94%) 100%);
+  }
+
+  /* Sakura Pastel Gradients */
+  .bg-gradient-pink {
+    background: linear-gradient(135deg,
+      hsl(320 70% 90%) 0%,
+      hsl(330 60% 95%) 100%);
+  }
+
+  .bg-gradient-purple {
+    background: linear-gradient(135deg,
+      hsl(280 50% 85%) 0%,
+      hsl(290 40% 90%) 100%);
+  }
+
+  .bg-gradient-lavender {
+    background: linear-gradient(135deg,
+      hsl(270 50% 88%) 0%,
+      hsl(280 40% 92%) 100%);
+  }
+
+  /* Sakura Tree Background */
+  .sakura-tree-bg {
+    position: relative;
+    background: linear-gradient(135deg,
+      hsl(330 100% 98%) 0%,
+      hsl(320 80% 96%) 50%,
+      hsl(280 60% 94%) 100%);
+  }
+
+  .sakura-tree-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -10%;
+    width: 50%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><defs><style>.sakura-tree{fill:%23654321;}.sakura-petals{fill:%23ffb3d9;opacity:0.8;}.sakura-falling{fill:%23ff99cc;opacity:0.6;}</style></defs><g><path class="sakura-tree" d="M200 350 Q190 300 180 250 Q170 200 175 150 Q180 100 190 80 Q200 60 210 80 Q220 100 225 150 Q230 200 220 250 Q210 300 200 350 Z"/><circle class="sakura-petals" cx="160" cy="120" r="25"/><circle class="sakura-petals" cx="190" cy="100" r="30"/><circle class="sakura-petals" cx="220" cy="110" r="28"/><circle class="sakura-petals" cx="240" cy="140" r="25"/><circle class="sakura-petals" cx="180" cy="140" r="20"/><circle class="sakura-petals" cx="210" cy="130" r="22"/><circle class="sakura-falling" cx="100" cy="200" r="3"/><circle class="sakura-falling" cx="120" cy="220" r="2"/><circle class="sakura-falling" cx="300" cy="180" r="3"/><circle class="sakura-falling" cx="320" cy="210" r="2"/></g></svg>') no-repeat center;
+    background-size: contain;
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Sakura Petals Animation Background */
+  .sakura-petals {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sakura-petals::after {
+    content: '🌸 🌸 🌸 🌸 🌸';
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: 120%;
+    font-size: 1.5rem;
+    opacity: 0.3;
+    animation: sakura-fall 20s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: flex-start;
+  }
+
+  /* Floating Sakura Petals */
+  .floating-petals {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .floating-petals::before,
+  .floating-petals::after {
+    content: '🌸';
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.5;
+    animation: sakura-float 8s ease-in-out infinite;
+    color: #ff69b4;
+  }
+
+  .floating-petals::before {
+    top: 20%;
+    left: 10%;
+    animation-delay: -2s;
+  }
+
+  .floating-petals::after {
+    top: 60%;
+    right: 15%;
+    animation-delay: -4s;
+  }
+
+  /* === KAWAII ANIMATED ELEMENTS === */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 3s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.6s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.5s ease-out;
+  }
+
+  /* Kawaii specific animations */
+  .animate-bounce-kawaii {
+    animation: bounce-kawaii 2s ease-in-out infinite;
+  }
+
+  .animate-wiggle {
+    animation: wiggle 1s ease-in-out infinite;
+  }
+
+  .animate-heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+
+  .animate-sparkle {
+    animation: sparkle 2s ease-in-out infinite;
+  }
+
+  /* === MOOD SPECIFIC STYLES === */
+  .mood-happy {
+    background: linear-gradient(135deg, #FFE066 0%, #FF6B6B 100%);
+    box-shadow: 0 8px 32px rgba(255, 224, 102, 0.3);
+  }
+
+  .mood-calm {
+    background: linear-gradient(135deg, #A8E6CF 0%, #88D8C0 100%);
+    box-shadow: 0 8px 32px rgba(168, 230, 207, 0.3);
+  }
+
+  .mood-sad {
+    background: linear-gradient(135deg, #B8B8FF 0%, #8E8EFF 100%);
+    box-shadow: 0 8px 32px rgba(184, 184, 255, 0.3);
+  }
+
+  .mood-energetic {
+    background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
+    box-shadow: 0 8px 32px rgba(255, 154, 158, 0.3);
+  }
+
+  /* === FORCE VISIBLE TEXT === */
+  .force-dark-text,
+  .force-dark-text * {
+    color: #1f2937 !important;
+    font-weight: bold !important;
+    text-shadow: none !important;
+  }
+
+  .force-gray-text,
+  .force-gray-text * {
+    color: #374151 !important;
+    text-shadow: none !important;
+  }
+
+  .force-light-gray-text,
+  .force-light-gray-text * {
+    color: #4b5563 !important;
+    text-shadow: none !important;
+  }
+
+  /* Hero specific classes */
+  .hero-title {
+    color: #1f2937 !important;
+    font-weight: bold !important;
+    text-shadow: none !important;
+  }
+
+  .hero-subtitle {
+    color: #374151 !important;
+    text-shadow: none !important;
+  }
+
+  .hero-description {
+    color: #4b5563 !important;
+    text-shadow: none !important;
   }
 }
 
 @layer utilities {
+  /* === IMPROVED GRID PATTERN === */
   .bg-grid-pattern {
     background-image:
-      linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.3) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .bg-dots-pattern {
+    background-image: radial-gradient(circle, hsl(var(--border) / 0.4) 1px, transparent 1px);
     background-size: 20px 20px;
   }
 
-  .dark .bg-grid-pattern {
-    background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  /* === CUSTOM SCROLLBAR === */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
   }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.6);
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+  }
+
+  /* === TEXT GRADIENTS === */
+  .text-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-cosmic {
+    background: linear-gradient(135deg, #8B5CF6, #EC4899, #F59E0B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Утилитарные классы для отключения подчёркиваний */
+  .no-underline {
+    text-decoration: none !important;
+  }
+
+  .no-underline:hover {
+    text-decoration: none !important;
+  }
+
+  /* === SAKURA ANIMATION CLASSES === */
+  .animate-sakura-float {
+    animation: sakura-float 8s ease-in-out infinite;
+  }
+
+  .animate-gentle-bounce {
+    animation: gentle-bounce 3s ease-in-out infinite;
+  }
+
+  .animate-sakura-glow {
+    animation: sakura-glow 4s ease-in-out infinite;
+  }
+
+  .animate-petal-fall {
+    animation: sakura-fall 15s linear infinite;
+  }
+}
+
+/* === KEYFRAME ANIMATIONS === */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 20px hsl(var(--primary) / 0.3); }
+  to { box-shadow: 0 0 30px hsl(var(--primary) / 0.6); }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* === SAKURA KEYFRAMES === */
+@keyframes sakura-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes sakura-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-10px) rotate(-5deg);
+  }
+}
+
+@keyframes sakura-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
+  }
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+/* === FORCE VISIBLE TEXT - MAXIMUM PRIORITY === */
+.hero-title {
+  color: #b19cd9 !important;
+  font-family: 'Caveat', cursive !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+  transform: rotate(-1deg) !important;
+}
+
+.hero-subtitle {
+  color: #c8b5db !important;
+  font-family: 'Kalam', cursive !important;
+  font-weight: 400 !important;
+  text-shadow: none !important;
+  transform: rotate(0.5deg) !important;
+}
+
+.hero-description {
+  color: #b8a9d1 !important;
+  font-family: 'Kalam', cursive !important;
+  font-weight: 300 !important;
+  text-shadow: none !important;
+}
+
+/* === FORCE VISIBLE BUTTON TEXT === */
+.picnote-button {
+  color: #b19cd9 !important;
+  background: transparent !important;
+  border: 2px solid #b19cd9 !important;
+  box-shadow: none !important;
+}
+
+.picnote-button:hover {
+  background: #b19cd9 !important;
+  color: white !important;
+}
+
+/* === FORCE ALL TEXT TO PASTEL LAVENDER WITH HANDWRITTEN FONT === */
+h1, h2, h3, h4, h5, h6 {
+  color: #b19cd9 !important;
+  font-family: 'Caveat', cursive !important;
+  font-weight: 700 !important;
+}
+
+p, span, div, label {
+  color: #c8b5db !important;
+  font-family: 'Kalam', cursive !important;
+  font-weight: 400 !important;
+}
+
+.text-gray-900,
+.text-gray-800,
+.text-gray-700,
+.text-gray-600,
+.text-primary {
+  color: #b8a9d1 !important;
+  font-family: 'Kalam', cursive !important;
+}
+
+/* Специальные стили для разных элементов */
+.feature-card h3,
+.sakura-card h3,
+.sakura-card h4 {
+  font-family: 'Caveat', cursive !important;
+  color: #b19cd9 !important;
+  font-weight: 600 !important;
+}
+
+/* Кнопки тоже рукописные */
+.picnote-button {
+  font-family: 'Kalam', cursive !important;
+  font-weight: 500 !important;
+}
+
+/* Дополнительные селекторы для полного покрытия */
+* {
+  color: #c8b5db !important;
+}
+
+body, html {
+  font-family: 'Kalam', cursive !important;
+  color: #c8b5db !important;
+}
+
+/* Все ссылки */
+a, a:hover, a:visited {
+  color: #b8a9d1 !important;
+  font-family: 'Kalam', cursive !important;
+}
+
+/* Все input и textarea */
+input, textarea, select {
+  font-family: 'Kalam', cursive !important;
+  color: #b8a9d1 !important;
+}
+
+/* Все карточки и контейнеры */
+.card, .card-content, .card-header, .card-title, .card-description {
+  color: #b8a9d1 !important;
+  font-family: 'Kalam', cursive !important;
+}
+
+/* Все текстовые классы Tailwind */
+.text-xs, .text-sm, .text-base, .text-lg, .text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl {
+  color: #c8b5db !important;
+  font-family: 'Kalam', cursive !important;
 }
 

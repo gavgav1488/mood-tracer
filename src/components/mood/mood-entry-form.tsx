@@ -77,14 +77,18 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="space-y-1">
-          <div className="inline-flex items-center space-x-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-            <Sparkles className="h-4 w-4" />
-            <span>{format(new Date(), 'EEEE, d MMMM', { locale: ru })}</span>
-          </div>
-          <h2 className="text-2xl font-semibold">Как вы себя чувствуете сегодня?</h2>
+      {/* Заголовок в стиле EMMO */}
+      <div className="text-center space-y-4">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
+             style={{ backgroundColor: 'var(--accent)', border: '1px solid var(--border)' }}>
+          <span className="text-lg">💜</span>
+          <span className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>
+            Сегодня, {format(new Date(), 'd MMMM', { locale: ru })}
+          </span>
         </div>
+        <h2 className="text-xl font-semibold" style={{ color: 'var(--foreground)' }}>
+          Как вы себя чувствуете сегодня?
+        </h2>
       </div>
 
       {error && (
@@ -97,14 +101,26 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
 
       <div className="grid grid-cols-1 gap-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-card rounded-xl border p-4">
+          <div className="rounded-2xl p-6"
+               style={{
+                 backgroundColor: 'var(--card)',
+                 border: '1px solid var(--border)',
+                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+               }}>
             <EmojiPicker selectedEmoji={emoji} onSelect={setEmoji} />
           </div>
 
           {isSuccess ? (
-            <div className="bg-card rounded-xl border p-4 relative">
+            <div className="rounded-2xl p-6 relative"
+                 style={{
+                   backgroundColor: 'var(--card)',
+                   border: '1px solid var(--border)',
+                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+                 }}>
               <div className="flex justify-between items-center mb-3">
-                <h3 className="text-lg font-medium">Ваша запись сохранена!</h3>
+                <h3 className="text-lg font-medium" style={{ color: 'var(--foreground)' }}>
+                  Ваша запись сохранена! 🌸
+                </h3>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -123,9 +139,16 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-card rounded-xl border p-4 space-y-3">
+          <div className="rounded-2xl p-6 space-y-4"
+               style={{
+                 backgroundColor: 'var(--card)',
+                 border: '1px solid var(--border)',
+                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+               }}>
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">Заметка</h3>
+              <h3 className="text-lg font-medium" style={{ color: 'var(--foreground)' }}>
+                Заметка
+              </h3>
             </div>
             <NoteEditor
               initialValue={note}
@@ -134,9 +157,14 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
             />
           </div>
 
-          <div className="bg-card rounded-xl border p-4 space-y-3">
+          <div className="rounded-2xl p-6 space-y-4"
+               style={{
+                 backgroundColor: 'var(--card)',
+                 border: '1px solid var(--border)',
+                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+               }}>
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium flex items-center gap-1">
+              <h3 className="text-lg font-medium flex items-center gap-1" style={{ color: 'var(--foreground)' }}>
                 <Tag className="h-4 w-4" />
                 Теги
               </h3>
@@ -158,12 +186,17 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
             </div>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <Button
             variant="outline"
             onClick={resetForm}
             disabled={isSaving || (!note.trim() && emoji === '😊')}
-            className="rounded-full"
+            className="rounded-2xl px-6 py-3 border-2"
+            style={{
+              borderColor: 'var(--border)',
+              color: 'var(--foreground)',
+              backgroundColor: 'transparent'
+            }}
           >
             <RefreshCw className="mr-2 h-4 w-4" />
             <span className="hidden sm:inline">Очистить</span>
@@ -171,7 +204,13 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
           <Button
             onClick={handleSave}
             disabled={isSaving || !note.trim()}
-            className="rounded-full"
+            className="rounded-2xl px-8 py-3"
+            style={{
+              backgroundColor: 'var(--primary)',
+              color: 'white',
+              border: 'none',
+              boxShadow: '0 4px 12px rgba(232, 180, 240, 0.3)'
+            }}
           >
             {isSaving ? (
               <>
@@ -183,8 +222,8 @@ export function MoodEntryForm({ onEntryCreated }: MoodEntryFormProps) {
               </>
             ) : (
               <>
-                <Save className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Сохранить запись</span>
+                <span className="mr-2">💜</span>
+                <span className="hidden sm:inline">Сохранить настроение</span>
                 <span className="sm:hidden">Сохранить</span>
               </>
             )}
